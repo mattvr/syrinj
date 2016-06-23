@@ -44,6 +44,7 @@ If you don't wish to use the `ExtendedMonoBehaviour` class, you just need to cal
 new MonoBehaviourInjector(this).Inject()
 ```
 from your MonoBehaviour (replace `this` with `myMonoBehaviour` if called externally) when you want the annotations to be evaluated.
+
 ---
 
 ####Extended usage:
