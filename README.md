@@ -28,7 +28,7 @@ public class Test : ExtendedMonoBehaviour
 
 **Explanation:**
 
-This framework simplifies some common tasks when constructing MonoBehaviours, without performance overhead or significant set-up. 
+This framework simplifies some common tasks when constructing MonoBehaviours, without significant performance overhead or set-up. 
 
 **Usage:**
 
@@ -63,5 +63,3 @@ public class Test : ExtendedMonoBehaviour
 
 **TODO:**
 * Add tests!
-* More informative error messages
-* Cache member attributes
