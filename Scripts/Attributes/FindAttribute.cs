@@ -1,12 +1,12 @@
-﻿using System;
-
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public class FindAttribute : Attribute
+﻿namespace Syrinj.Attributes
 {
-    public string GameObjectName { get; private set; }
-
-    public FindAttribute(string gameObjectName)
+    public class FindAttribute : UnityHelperAttribute
     {
-        GameObjectName = gameObjectName;
+        public string GameObjectName { get; private set; }
+
+        public FindAttribute(string gameObjectName)
+        {
+            GameObjectName = gameObjectName;
+        }
     }
 }

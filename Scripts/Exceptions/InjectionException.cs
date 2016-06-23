@@ -1,9 +1,12 @@
 ﻿using System;
 
-public class InjectionException : Exception
+namespace Syrinj.Exceptions
 {
-    public InjectionException(string message) : base(message)
+    public class InjectionException : Exception
     {
+        public InjectionException(string message) : base(message)
+        {
 
+        }
     }
 }

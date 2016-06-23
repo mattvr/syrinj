@@ -1,140 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
+using Syrinj.Attributes;
+using Syrinj.Resolvers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public class MonoBehaviourInjector
+namespace Syrinj.Injection
 {
-    private class InjectionParameters
+    public class MonoBehaviourInjector
     {
-        public Type Type;
-        public Attribute Attribute;
+        private readonly MonoBehaviour _monoBehaviour;
+        private readonly Type _derivedType;
 
-        public InjectionParameters(Type type, Attribute attribute)
+        private List<Injectable> _injectables;
+
+        public MonoBehaviourInjector(MonoBehaviour monoBehaviour)
         {
-            Type = type;
-            Attribute = attribute;
+            _monoBehaviour = monoBehaviour;
+            _derivedType = monoBehaviour.GetType();
+            _injectables = new List<Injectable>();
         }
-    }
 
-    private delegate object InjectDelegate(InjectionParameters attribute);
-
-    private delegate Component GetComponentDelegate(Type type);
-
-    private readonly MonoBehaviour _monoBehaviour;
-    private readonly Type _derivedType;
-
-    public MonoBehaviourInjector(MonoBehaviour monoBehaviour)
-    {
-        _monoBehaviour = monoBehaviour;
-        _derivedType = monoBehaviour.GetType();
-    }
-
-    public void Inject()
-    {
-        InternalInject<FindAttribute>(p => 
-            GameObject.Find((p.Attribute as FindAttribute).GameObjectName)
-        );
-
-        InternalInject<FindObjectOfTypeAttribute>(p =>
-            Object.FindObjectOfType((p.Attribute as FindObjectOfTypeAttribute).ComponentType)
-        );
-
-        InternalInject<FindWithTagAttribute>(p =>
-            GameObject.FindWithTag((p.Attribute as FindWithTagAttribute).Tag)
-        );
-        
-        InternalInject<GetComponentAttribute>(p =>
-            TryGetComponent(p, type => _monoBehaviour.GetComponent(type))
-        );
-
-        InternalInject<GetComponentInChildrenAttribute>(p =>
-            TryGetComponent(p, type => _monoBehaviour.GetComponentInChildren(type))
-        );
-    }
-
-    private object TryGetComponent(InjectionParameters parameters, GetComponentDelegate componentGetter)
-    {
-        var attribute = parameters.Attribute as GetComponentAttribute;
-        if (attribute.ComponentType == null)
+        public void Inject()
         {
-            return componentGetter(parameters.Type);
+            LoadInjectableMembers();
+            for (int i = 0; i < _injectables.Count; i++)
+            {
+                InternalInject(_injectables[i]);
+            }
         }
-        else
-        {
-            return componentGetter(attribute.ComponentType);
-        }
-    }
 
-    private void InternalInject<T>(InjectDelegate injectDelegate) where T : Attribute
-    {
-        Type attributeType = typeof(T);
-        var members = GetMembersWithAttribute(attributeType);
-
-        for (int i = 0; i < members.Length; i++)
+        private void LoadInjectableMembers()
         {
-            var attribute = GetAttributeOfType<T>(members[i]);
-            Inject<T>(members[i], injectDelegate, attribute);
-        }
-    }
+            var allMembers = _derivedType.GetMembers(GetBindingFlags());
 
-    private MemberInfo[] GetMembersWithAttribute(Type t)
-    {
-        return _derivedType.FindMembers(
-            GetMemberTypes(),
-            GetBindingFlags(),
-            MemberFilter,
-            t);
-    }
-    
-    private void Inject<T>(MemberInfo info, InjectDelegate injectDelegate, Attribute attribute)
-    {
-        if (info.MemberType == MemberTypes.Property)
-        {
-            var pInfo = info as PropertyInfo;
-            var parameters = new InjectionParameters(pInfo.PropertyType, attribute);
-            pInfo.SetValue(_monoBehaviour, injectDelegate(parameters), null);
+            for (int i = 0; i < allMembers.Length; i++)
+            {
+                LoadInjectableMemberAttributes(allMembers[i]);
+            }
         }
-        else if (info.MemberType == MemberTypes.Field)
-        {
-            var fInfo = info as FieldInfo;
-            var parameters = new InjectionParameters(fInfo.FieldType, attribute);
-            fInfo.SetValue(_monoBehaviour, injectDelegate(parameters));
-        }
-    }
 
-    private T GetAttributeOfType<T>(MemberInfo member) where T : Attribute
-    {
-        var attributes = member.GetCustomAttributes(typeof(T), true);
-        if (attributes.Length > 1)
+        private static BindingFlags GetBindingFlags()
         {
-            throw new InjectionException("Found multiple attributes of type " + typeof(T).Name);
+            return BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         }
-        else if (attributes.Length == 0)
+
+        private void LoadInjectableMemberAttributes(MemberInfo info)
         {
-            throw new InjectionException("Could not find attributes of type " + typeof(T).Name);
+            var attributes = info.GetCustomAttributes(typeof (UnityHelperAttribute), false);
+            for (int i = 0; i < attributes.Length; i++)
+            {
+                var injectable = InjectableFactory.Create(info, (UnityHelperAttribute) attributes[i], _monoBehaviour);
+                if (injectable != null)
+                {
+                    _injectables.Add(injectable);
+                }
+            }
         }
-        else if (!(attributes[0] is T))
+
+        private void InternalInject(Injectable injectable)
         {
-            throw new InjectionException("Attribute is not of type " + typeof(T).Name);
+            var resolver = ResolverLookup.Get(injectable.Attribute.GetType());
+            if (resolver != null)
+            {
+                var dependency = resolver.Resolve(_monoBehaviour, injectable);
+                injectable.Inject(dependency);
+            }
         }
-        return (T) attributes[0];
-    }
-
-    private static MemberTypes GetMemberTypes()
-    {
-        return MemberTypes.Property | MemberTypes.Field;
-    }
-
-    private static BindingFlags GetBindingFlags()
-    {
-        return BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-    }
-
-    private static bool MemberFilter(MemberInfo memberInfo, object filterCriteria)
-    {
-        return memberInfo.IsDefined((Type)filterCriteria, true);
     }
 }

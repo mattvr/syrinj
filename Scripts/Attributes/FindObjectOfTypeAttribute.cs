@@ -1,12 +1,14 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public class FindObjectOfTypeAttribute : Attribute
+namespace Syrinj.Attributes
 {
-    public Type ComponentType { get; private set; }
-
-    public FindObjectOfTypeAttribute(Type componentType)
+    public class FindObjectOfTypeAttribute : UnityHelperAttribute
     {
-        ComponentType = componentType;
+        public Type ComponentType { get; private set; }
+
+        public FindObjectOfTypeAttribute(Type componentType)
+        {
+            ComponentType = componentType;
+        }
     }
 }

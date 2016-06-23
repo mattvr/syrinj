@@ -1,12 +1,12 @@
-﻿using System;
-
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public class FindWithTagAttribute : Attribute
+﻿namespace Syrinj.Attributes
 {
-    public string Tag { get; private set; }
-
-    public FindWithTagAttribute(string tag)
+    public class FindWithTagAttribute : UnityHelperAttribute
     {
-        Tag = tag;
+        public string Tag { get; private set; }
+
+        public FindWithTagAttribute(string tag)
+        {
+            Tag = tag;
+        }
     }
 }

@@ -1,18 +1,19 @@
-﻿
-using System;
+﻿using System;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-public class GetComponentAttribute : Attribute
+namespace Syrinj.Attributes
 {
-    public Type ComponentType { get; private set; }
-
-    public GetComponentAttribute()
+    public class GetComponentAttribute : UnityHelperAttribute
     {
+        public Type ComponentType { get; private set; }
+
+        public GetComponentAttribute()
+        {
         
-    }
+        }
 
-    public GetComponentAttribute(Type componentType)
-    {
-        ComponentType = componentType;
+        public GetComponentAttribute(Type componentType)
+        {
+            ComponentType = componentType;
+        }
     }
 }
