@@ -89,14 +89,24 @@ namespace Syrinj.Injection
         {
             if (!cachedMembers.ContainsKey(type))
             {
-                cachedMembers.Add(type, type.GetMembers(GetBindingFlags()));
+                cachedMembers.Add(type, type.FindMembers(ValidMemberTypes(), ValidBindingFlags(), Filter, null));
             }
             return cachedMembers[type];
         }
 
         private static bool IsValidType(MemberInfo info)
         {
-            return (info.MemberType & GetMemberTypes()) != 0;
+            return (info.MemberType & ValidMemberTypes()) != 0;
+        }
+
+        private static MemberTypes ValidMemberTypes()
+        {
+            return MemberTypes.Field | MemberTypes.Property;
+        }
+
+        private static BindingFlags ValidBindingFlags()
+        {
+            return BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         }
 
         private static object[] GetCachedAttributes(MemberInfo info)
@@ -108,14 +118,9 @@ namespace Syrinj.Injection
             return cachedAttributes[info];
         }
 
-        private static BindingFlags GetBindingFlags()
+        private static bool Filter(MemberInfo m, object filtercriteria)
         {
-            return BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-        }
-
-        private static MemberTypes GetMemberTypes()
-        {
-            return MemberTypes.Field | MemberTypes.Property;
+            return m.IsDefined(typeof(UnityHelperAttribute), false);
         }
     }
 }
