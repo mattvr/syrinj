@@ -8,7 +8,21 @@ namespace Syrinj.Resolvers
     {
         public object Resolve(MonoBehaviour monoBehaviour, Injectable injectable)
         {
-            return GameObject.Find(((FindAttribute) injectable.Attribute).GameObjectName);
+            var name = ((FindAttribute)injectable.Attribute).GameObjectName;
+            var gameObject = GameObject.Find(name);
+
+            if (gameObject == null)
+            {
+                return null;
+            }
+            else if (injectable.Type != typeof(GameObject))
+            {
+                return gameObject.GetComponent(injectable.Type);
+            }
+            else
+            {
+                return gameObject;
+            }
         }
     }
 }
