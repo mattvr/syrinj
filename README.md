@@ -26,17 +26,27 @@ public class Test : ExtendedMonoBehaviour
 }
 ```
 
-**Explanation:**
+####Explanation:
 
 This framework simplifies some common tasks when constructing MonoBehaviours, without significant performance overhead or set-up. 
 
-**Usage:**
+####Usage:
 
 Have your Unity classes inherit from ExtendedMonoBehaviour. Then use the documented annotations to automatically inject your Unity dependencies.
 
+---
+*Notes:*
+
 The annotations are evaluated in `ExtendedMonoBehaviour.Awake()`, so don't forget to call `base.Awake()` if you override Unity's `Awake()` functionality.
 
-**Extended usage:**
+If you don't wish to use the `ExtendedMonoBehaviour` class, you just need to call: 
+```csharp 
+new MonoBehaviourInjector(this).Inject()
+```
+from your MonoBehaviour (replace `this` with `myMonoBehaviour` if called externally) when you want the annotations to be evaluated.
+---
+
+####Extended usage:
 
 ```csharp
 public class Test : ExtendedMonoBehaviour
@@ -61,5 +71,5 @@ public class Test : ExtendedMonoBehaviour
 }
 ```
 
-**TODO:**
+####TODO:
 * Add tests!
