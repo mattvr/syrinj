@@ -60,3 +60,8 @@ public class Test : ExtendedMonoBehaviour
     private AudioSource ChildAudioSource;
 }
 ```
+
+**TODO:**
+* Add tests!
+* More informative error messages
+* Cache member attributes
