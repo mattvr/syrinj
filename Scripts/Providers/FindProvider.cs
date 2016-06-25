@@ -2,11 +2,11 @@
 using Syrinj.Injection;
 using UnityEngine;
 
-namespace Syrinj.Resolvers
+namespace Syrinj.Providers
 {
-    public class FindResolver : IResolver
+    public class FindProvider : IProvider
     {
-        public object Resolve(MonoBehaviour monoBehaviour, Injectable injectable)
+        public object Provide(Injectable injectable)
         {
             var name = ((FindAttribute)injectable.Attribute).GameObjectName;
             var gameObject = GameObject.Find(name);

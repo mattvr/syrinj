@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Assets.Syrinj.Scripts.Graph;
 using Syrinj.Attributes;
 using Syrinj.Exceptions;
-using Syrinj.Resolvers;
+using Syrinj.Providers;
+using Syrinj.Graph;
 using UnityEngine;
 
 namespace Syrinj.Injection
 {
     public class MonoBehaviourInjector
     {
+        private static IDependencyGraph graph = new DependencyMap();
+
+        private static readonly Dictionary<Type, IProvider> defaultProviders = ProviderMaps.Default;
+
         private static readonly Dictionary<Type, MemberInfo[]> cachedMembers = new Dictionary<Type, MemberInfo[]>();
         private static readonly Dictionary<MemberInfo, object[]> cachedAttributes = new Dictionary<MemberInfo, object[]>();
 
@@ -27,25 +34,22 @@ namespace Syrinj.Injection
 
         public void Inject()
         {
-            LoadInjectableMembers();
+            LoadMembers();
 
-            for (int i = 0; i < _injectables.Count; i++)
-            {
-                InternalInject(_injectables[i]);
-            }
+            EvaluateAllInjectables();
         }
 
-        private void LoadInjectableMembers()
+        private void LoadMembers()
         {
             var allMembers = GetCachedMembers(_derivedType);
 
             for (int i = 0; i < allMembers.Length; i++)
             {
-                LoadInjectableMemberAttributes(allMembers[i]);
+                LoadMemberAttributes(allMembers[i]);
             }
         }
 
-        private void LoadInjectableMemberAttributes(MemberInfo info)
+        private void LoadMemberAttributes(MemberInfo info)
         {
             if (!IsValidType(info))
             {
@@ -63,17 +67,25 @@ namespace Syrinj.Injection
             }
         }
 
-        private void InternalInject(Injectable injectable)
+        private void EvaluateAllInjectables()
         {
-            var resolver = ResolverLookup.Get(injectable.Attribute.GetType());
-            if (resolver != null)
+            for (int i = 0; i < _injectables.Count; i++)
             {
-                var dependency = resolver.Resolve(_monoBehaviour, injectable);
-                TryDoInject(injectable, dependency);
+                Evaluate(_injectables[i]);
             }
         }
 
-        private void TryDoInject(Injectable injectable, object dependency)
+        private void Evaluate(Injectable injectable)
+        {
+            var provider = defaultProviders[injectable.Attribute.GetType()];
+            if (provider != null)
+            {
+                var dependency = provider.Provide(injectable);
+                TryInject(injectable, dependency);
+            }
+        }
+
+        private void TryInject(Injectable injectable, object dependency)
         {
             if (dependency == null || !injectable.Type.IsInstanceOfType(dependency))
             {

@@ -15,7 +15,7 @@ namespace Syrinj.Injection
 
         public override void Inject(object dependency)
         {
-            _propertyInfo.SetValue(_monoBehaviour, dependency, null);
+            _propertyInfo.SetValue(MonoBehaviour, dependency, null);
         }
     }
 }

@@ -2,20 +2,20 @@
 using Syrinj.Injection;
 using UnityEngine;
 
-namespace Syrinj.Resolvers
+namespace Syrinj.Providers
 {
-    public class GetComponentResolver : IResolver
+    public class GetComponentProvider : IProvider
     {
-        public object Resolve(MonoBehaviour monoBehaviour, Injectable injectable)
+        public object Provide(Injectable injectable)
         {
             var attribute = (GetComponentAttribute) injectable.Attribute;
             if (attribute.ComponentType == null)
             {
-                return monoBehaviour.GetComponent(injectable.Type);
+                return injectable.MonoBehaviour.GetComponent(injectable.Type);
             }
             else
             {
-                return monoBehaviour.GetComponent(attribute.ComponentType);
+                return injectable.MonoBehaviour.GetComponent(attribute.ComponentType);
             }
         }
     }

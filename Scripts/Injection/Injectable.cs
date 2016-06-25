@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Syrinj.Resolvers;
+using Syrinj.Providers;
 using UnityEngine;
 
 namespace Syrinj.Injection
@@ -11,14 +11,13 @@ namespace Syrinj.Injection
     {
         public Type Type;
         public Attribute Attribute;
-
-        protected MonoBehaviour _monoBehaviour;
+        public MonoBehaviour MonoBehaviour;
 
         protected Injectable(Type type, Attribute attribute, MonoBehaviour monoBehaviour)
         {
             Type = type;
             Attribute = attribute;
-            _monoBehaviour = monoBehaviour;
+            MonoBehaviour = monoBehaviour;
         }
 
         public abstract void Inject(object dependency);

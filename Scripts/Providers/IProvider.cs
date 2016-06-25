@@ -5,10 +5,10 @@ using System.Text;
 using Syrinj.Injection;
 using UnityEngine;
 
-namespace Syrinj.Resolvers
+namespace Syrinj.Providers
 {
-    public interface IResolver
+    public interface IProvider
     {
-        object Resolve(MonoBehaviour monoBehaviour, Injectable injectable);
+        object Provide(Injectable injectable);
     }
 }
