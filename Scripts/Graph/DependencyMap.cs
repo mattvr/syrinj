@@ -22,7 +22,14 @@ namespace Syrinj.Graph
 
         public override object Get(Type key)
         {
-            return dictionary[key];
+            if (dictionary.ContainsKey(key))
+            {
+                return dictionary[key];
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

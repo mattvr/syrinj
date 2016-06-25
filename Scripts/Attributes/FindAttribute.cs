@@ -1,6 +1,6 @@
 ﻿namespace Syrinj.Attributes
 {
-    public class FindAttribute : UnityHelperAttribute
+    public class FindAttribute : UnityInjectorAttribute
     {
         public string GameObjectName { get; private set; }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Assets.Syrinj.Scripts.Graph;
 using Syrinj.Attributes;
+using Syrinj.Caching;
 using Syrinj.Exceptions;
 using Syrinj.Providers;
 using Syrinj.Graph;
@@ -15,10 +16,9 @@ namespace Syrinj.Injection
     {
         private static IDependencyGraph graph = new DependencyMap();
 
-        private static readonly Dictionary<Type, IProvider> defaultProviders = ProviderMaps.Default;
+        private static readonly Dictionary<Type, IProvider> defaultProviders = ProviderGroups.Default;
 
-        private static readonly Dictionary<Type, MemberInfo[]> cachedMembers = new Dictionary<Type, MemberInfo[]>();
-        private static readonly Dictionary<MemberInfo, object[]> cachedAttributes = new Dictionary<MemberInfo, object[]>();
+        private static readonly AttributeCache attributeCache = new AttributeCache();
 
         private readonly MonoBehaviour _monoBehaviour;
         private readonly Type _derivedType;
@@ -36,14 +36,14 @@ namespace Syrinj.Injection
         {
             LoadMembers();
 
-            EvaluateAllInjectables();
+            InjectAll();
         }
 
         private void LoadMembers()
         {
-            var allMembers = GetCachedMembers(_derivedType);
+            var allMembers = attributeCache.GetMembersForType(_derivedType);
 
-            for (int i = 0; i < allMembers.Length; i++)
+            for (int i = 0; i < allMembers.Count; i++)
             {
                 LoadMemberAttributes(allMembers[i]);
             }
@@ -51,15 +51,18 @@ namespace Syrinj.Injection
 
         private void LoadMemberAttributes(MemberInfo info)
         {
-            if (!IsValidType(info))
-            {
-                return;
-            }
+            LoadInjectorAttributes(info);
+            LoadProviderAttributes(info);
+        }
 
-            var attributes = GetCachedAttributes(info);
-            for (int i = 0; i < attributes.Length; i++)
+        private void LoadInjectorAttributes(MemberInfo info)
+        {
+            var attributes = attributeCache.GetInjectorAttributesForMember(info);
+            if (attributes == null) return;
+
+            for (int i = 0; i < attributes.Count; i++)
             {
-                var injectable = InjectableFactory.Create(info, (UnityHelperAttribute) attributes[i], _monoBehaviour);
+                var injectable = InjectableFactory.Create(info, attributes[i], _monoBehaviour);
                 if (injectable != null)
                 {
                     _injectables.Add(injectable);
@@ -67,27 +70,44 @@ namespace Syrinj.Injection
             }
         }
 
-        private void EvaluateAllInjectables()
+        private void LoadProviderAttributes(MemberInfo info)
         {
-            for (int i = 0; i < _injectables.Count; i++)
+            var attributes = attributeCache.GetProviderAttributesForMember(info);
+            if (attributes == null) return;
+
+            for (int i = 0; i < attributes.Count; i++)
             {
-                Evaluate(_injectables[i]);
+                //graph.RegisterProvider();
             }
         }
 
-        private void Evaluate(Injectable injectable)
+        private void InjectAll()
+        {
+            for (int i = 0; i < _injectables.Count; i++)
+            {
+                ResolveDependencyAndInject(_injectables[i]);
+            }
+        }
+
+        private void ResolveDependencyAndInject(Injectable injectable)
         {
             var provider = defaultProviders[injectable.Attribute.GetType()];
+
             if (provider != null)
             {
-                var dependency = provider.Provide(injectable);
-                TryInject(injectable, dependency);
+                var dependencyFromProvider = provider.Provide(injectable);
+                TryInject(injectable, dependencyFromProvider);
+            }
+            else
+            {
+                var dependencyFromGraph = graph.Get(injectable.Type);
+                TryInject(injectable, dependencyFromGraph);
             }
         }
 
         private void TryInject(Injectable injectable, object dependency)
         {
-            if (dependency == null || !injectable.Type.IsInstanceOfType(dependency))
+            if (ValidDependency(injectable, dependency))
             {
                 throw new InjectionException(_monoBehaviour, "Could not find dependency for " + injectable.Type);
             }
@@ -97,42 +117,9 @@ namespace Syrinj.Injection
             }
         }
 
-        private static MemberInfo[] GetCachedMembers(Type type)
+        private bool ValidDependency(Injectable injectable, object dependency)
         {
-            if (!cachedMembers.ContainsKey(type))
-            {
-                cachedMembers.Add(type, type.FindMembers(ValidMemberTypes(), ValidBindingFlags(), Filter, null));
-            }
-            return cachedMembers[type];
-        }
-
-        private static bool IsValidType(MemberInfo info)
-        {
-            return (info.MemberType & ValidMemberTypes()) != 0;
-        }
-
-        private static MemberTypes ValidMemberTypes()
-        {
-            return MemberTypes.Field | MemberTypes.Property;
-        }
-
-        private static BindingFlags ValidBindingFlags()
-        {
-            return BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-        }
-
-        private static object[] GetCachedAttributes(MemberInfo info)
-        {
-            if (!cachedAttributes.ContainsKey(info))
-            {
-                cachedAttributes.Add(info, info.GetCustomAttributes(typeof(UnityHelperAttribute), false));
-            }
-            return cachedAttributes[info];
-        }
-
-        private static bool Filter(MemberInfo m, object filtercriteria)
-        {
-            return m.IsDefined(typeof(UnityHelperAttribute), false);
+            return dependency == null || dependency.Equals(null) || !injectable.Type.IsInstanceOfType(dependency);
         }
     }
 }

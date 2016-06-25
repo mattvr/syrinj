@@ -6,7 +6,7 @@ using Syrinj.Attributes;
 
 namespace Syrinj.Providers
 {
-    public static class ProviderMaps
+    public static class ProviderGroups
     {
         public static readonly Dictionary<Type, IProvider> Default = new Dictionary<Type, IProvider>()
         {

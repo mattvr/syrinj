@@ -1,6 +1,6 @@
 ﻿namespace Syrinj.Attributes
 {
-    public class FindWithTagAttribute : UnityHelperAttribute
+    public class FindWithTagAttribute : UnityInjectorAttribute
     {
         public string Tag { get; private set; }
 

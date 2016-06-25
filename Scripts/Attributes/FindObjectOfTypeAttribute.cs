@@ -2,7 +2,7 @@
 
 namespace Syrinj.Attributes
 {
-    public class FindObjectOfTypeAttribute : UnityHelperAttribute
+    public class FindObjectOfTypeAttribute : UnityInjectorAttribute
     {
         public Type ComponentType { get; private set; }
 
