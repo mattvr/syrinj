@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Assets.Syrinj.Scripts.Graph;
+using Syrinj.Providers;
 
 namespace Syrinj.Graph
 {
     public class DependencyMap : IDependencyGraph
     {
-        public Dictionary<Type, object> dictionary;
+        public Dictionary<Type, Provider> dictionary;
 
         public DependencyMap()
         {
-            dictionary = new Dictionary<Type, object>();
+            dictionary = new Dictionary<Type, Provider>();
         }
 
-        public override void RegisterProvider(Type binding, object provider)
+        public override void RegisterProvider(Type binding, Provider provider)
         {
             dictionary.Add(binding, provider);
         }
@@ -24,7 +25,7 @@ namespace Syrinj.Graph
         {
             if (dictionary.ContainsKey(key))
             {
-                return dictionary[key];
+                return dictionary[key].Get();
             }
             else
             {

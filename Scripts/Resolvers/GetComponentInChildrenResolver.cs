@@ -2,11 +2,11 @@
 using Syrinj.Injection;
 using UnityEngine;
 
-namespace Syrinj.Providers
+namespace Syrinj.Resolvers
 {
-    public class GetComponentInChildrenProvider : IProvider
+    public class GetComponentInChildrenResolver : IResolver
     {
-        public object Provide(Injectable injectable)
+        public object Resolve(Injectable injectable)
         {
             var attribute = (GetComponentInChildrenAttribute) injectable.Attribute;
             if (attribute.ComponentType == null)

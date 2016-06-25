@@ -6,8 +6,9 @@ using Assets.Syrinj.Scripts.Graph;
 using Syrinj.Attributes;
 using Syrinj.Caching;
 using Syrinj.Exceptions;
-using Syrinj.Providers;
+using Syrinj.Resolvers;
 using Syrinj.Graph;
+using Syrinj.Providers;
 using UnityEngine;
 
 namespace Syrinj.Injection
@@ -16,7 +17,7 @@ namespace Syrinj.Injection
     {
         private static IDependencyGraph graph = new DependencyMap();
 
-        private static readonly Dictionary<Type, IProvider> defaultProviders = ProviderGroups.Default;
+        private static readonly Dictionary<Type, IResolver> defaultResolvers = ResolverGroups.Default;
 
         private static readonly AttributeCache attributeCache = new AttributeCache();
 
@@ -77,7 +78,11 @@ namespace Syrinj.Injection
 
             for (int i = 0; i < attributes.Count; i++)
             {
-                //graph.RegisterProvider();
+                var provider = ProviderFactory.Create(info, _monoBehaviour);
+                if (provider != null)
+                {
+                    graph.RegisterProvider(provider.Type, provider);
+                }
             }
         }
 
@@ -91,11 +96,11 @@ namespace Syrinj.Injection
 
         private void ResolveDependencyAndInject(Injectable injectable)
         {
-            var provider = defaultProviders[injectable.Attribute.GetType()];
+            var resolver = GetResolverOrNull(injectable);
 
-            if (provider != null)
+            if (resolver != null)
             {
-                var dependencyFromProvider = provider.Provide(injectable);
+                var dependencyFromProvider = resolver.Resolve(injectable);
                 TryInject(injectable, dependencyFromProvider);
             }
             else
@@ -105,21 +110,32 @@ namespace Syrinj.Injection
             }
         }
 
-        private void TryInject(Injectable injectable, object dependency)
+        private IResolver GetResolverOrNull(Injectable injectable)
         {
-            if (ValidDependency(injectable, dependency))
+            var type = injectable.Attribute.GetType();
+            if (defaultResolvers.ContainsKey(type))
             {
-                throw new InjectionException(_monoBehaviour, "Could not find dependency for " + injectable.Type);
+                return defaultResolvers[type];
             }
             else
             {
-                injectable.Inject(dependency);
+                return null;
             }
+        }
+
+        private void TryInject(Injectable injectable, object dependency)
+        {
+            if (!ValidDependency(injectable, dependency))
+            {
+                throw new InjectionException(_monoBehaviour, "Could not find dependency for " + injectable);
+            }
+
+            injectable.Inject(dependency);
         }
 
         private bool ValidDependency(Injectable injectable, object dependency)
         {
-            return dependency == null || dependency.Equals(null) || !injectable.Type.IsInstanceOfType(dependency);
+            return (dependency != null && !dependency.Equals(null) && injectable.Type.IsInstanceOfType(dependency));
         }
     }
 }

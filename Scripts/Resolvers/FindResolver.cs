@@ -2,14 +2,14 @@
 using Syrinj.Injection;
 using UnityEngine;
 
-namespace Syrinj.Providers
+namespace Syrinj.Resolvers
 {
-    public class FindWithTagProvider : IProvider
+    public class FindResolver : IResolver
     {
-        public object Provide(Injectable injectable)
+        public object Resolve(Injectable injectable)
         {
-            var tag = ((FindWithTagAttribute) injectable.Attribute).Tag;
-            var gameObject = GameObject.FindWithTag(tag);
+            var name = ((FindAttribute)injectable.Attribute).GameObjectName;
+            var gameObject = GameObject.Find(name);
 
             if (gameObject == null)
             {

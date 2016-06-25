@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Syrinj.Providers;
+using Syrinj.Resolvers;
 using UnityEngine;
 
 namespace Syrinj.Injection
@@ -21,5 +21,7 @@ namespace Syrinj.Injection
         }
 
         public abstract void Inject(object dependency);
+
+        public abstract override string ToString();
     }
 }

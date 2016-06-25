@@ -17,5 +17,10 @@ namespace Syrinj.Injection
         {
             _propertyInfo.SetValue(MonoBehaviour, dependency, null);
         }
+
+        public override string ToString()
+        {
+            return _propertyInfo.Name;
+        }
     }
 }
