@@ -7,6 +7,7 @@ using Syrinj.Providers;
 
 namespace Syrinj.Graph
 {
+    // TODO: Make proper dependency graph
     public class DependencyMap : IDependencyGraph
     {
         public Dictionary<Type, Provider> dictionary;
@@ -18,7 +19,14 @@ namespace Syrinj.Graph
 
         public override void RegisterProvider(Type binding, Provider provider)
         {
-            dictionary.Add(binding, provider);
+            if (!dictionary.ContainsKey(binding))
+            {
+                dictionary.Add(binding, provider);
+            }
+            else
+            {
+                //dictionary[binding] = provider;
+            }
         }
 
         public override object Get(Type key)

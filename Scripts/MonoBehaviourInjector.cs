@@ -21,49 +21,86 @@ namespace Syrinj.Injection
 
         private static readonly AttributeCache attributeCache = new AttributeCache();
 
-        private readonly MonoBehaviour _monoBehaviour;
-        private readonly Type _derivedType;
+        private static readonly HashSet<object> visited = new HashSet<object>(); // TODO: move to DependencyGraph
 
+        private readonly MonoBehaviour _monoBehaviour;
+        private readonly bool _injectChildren;
         private readonly List<Injectable> _injectables;
 
-        public MonoBehaviourInjector(MonoBehaviour monoBehaviour)
+        public MonoBehaviourInjector(MonoBehaviour monoBehaviour) : this(monoBehaviour, false)
+        {
+        }
+
+        public MonoBehaviourInjector(MonoBehaviour monoBehaviour, bool injectChildren) 
         {
             _monoBehaviour = monoBehaviour;
-            _derivedType = monoBehaviour.GetType();
             _injectables = new List<Injectable>();
+            _injectChildren = injectChildren;
         }
 
         public void Inject()
         {
-            LoadMembers();
+            if (visited.Contains(this))
+            {
+                return;
+            }
 
-            InjectAll();
+            ProcessAllComponents();
+
+            InjectAllComponents();
         }
 
-        private void LoadMembers()
+        private void ProcessAllComponents()
         {
-            var allMembers = attributeCache.GetMembersForType(_derivedType);
+            var behaviours = GetAttachedComponents();
 
-            for (int i = 0; i < allMembers.Count; i++)
+            for (int i = 0; i < behaviours.Length; i++)
             {
-                LoadMemberAttributes(allMembers[i]);
+                var behaviour = behaviours[i];
+                if (!visited.Contains(behaviour))
+                {
+                    LoadMembers(behaviour);
+                    visited.Add(behaviour);
+                }
             }
         }
 
-        private void LoadMemberAttributes(MemberInfo info)
+        private ExtendedMonoBehaviour[] GetAttachedComponents()
         {
-            LoadInjectorAttributes(info);
-            LoadProviderAttributes(info);
+            if (_injectChildren)
+            {
+                return _monoBehaviour.GetComponentsInChildren<ExtendedMonoBehaviour>();
+            }
+            else
+            {
+                return _monoBehaviour.GetComponents<ExtendedMonoBehaviour>();
+            }
         }
 
-        private void LoadInjectorAttributes(MemberInfo info)
+        private void LoadMembers(MonoBehaviour behaviour)
+        {
+            var allMembers = attributeCache.GetMembersForType(behaviour.GetType());
+
+            for (int i = 0; i < allMembers.Count; i++)
+            {
+                LoadMemberAttributes(allMembers[i], behaviour);
+            }
+        }
+
+        private void LoadMemberAttributes(MemberInfo info, MonoBehaviour behaviour)
+        {
+            LoadInjectorAttributes(info, behaviour);
+            LoadProviderAttributes(info, behaviour);
+        }
+
+        private void LoadInjectorAttributes(MemberInfo info, MonoBehaviour behaviour)
         {
             var attributes = attributeCache.GetInjectorAttributesForMember(info);
             if (attributes == null) return;
 
             for (int i = 0; i < attributes.Count; i++)
             {
-                var injectable = InjectableFactory.Create(info, attributes[i], _monoBehaviour);
+                var injectable = InjectableFactory.Create(info, attributes[i], behaviour);
                 if (injectable != null)
                 {
                     _injectables.Add(injectable);
@@ -71,14 +108,14 @@ namespace Syrinj.Injection
             }
         }
 
-        private void LoadProviderAttributes(MemberInfo info)
+        private void LoadProviderAttributes(MemberInfo info, MonoBehaviour behaviour)
         {
             var attributes = attributeCache.GetProviderAttributesForMember(info);
             if (attributes == null) return;
 
             for (int i = 0; i < attributes.Count; i++)
             {
-                var provider = ProviderFactory.Create(info, _monoBehaviour);
+                var provider = ProviderFactory.Create(info, behaviour);
                 if (provider != null)
                 {
                     graph.RegisterProvider(provider.Type, provider);
@@ -86,7 +123,7 @@ namespace Syrinj.Injection
             }
         }
 
-        private void InjectAll()
+        private void InjectAllComponents()
         {
             for (int i = 0; i < _injectables.Count; i++)
             {
