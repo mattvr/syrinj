@@ -1,5 +1,5 @@
 #Syrinj
-**Lightweight dependency injection** & convenient attributes for Unity
+######**Lightweight dependency injection** & convenient attributes for Unity
 
 ---
 
@@ -14,8 +14,10 @@ public class SimpleBehaviour : ExtendedMonoBehaviour
 
 **Simple dependency injection:**
 ```csharp
-public class SceneProviders : ExtendedMonoBehaviour // provides fields for dependency injection
+public class SceneProviders : ExtendedMonoBehaviour 
 {
+    // these fields are providers/bindings for dependency injection
+    
     [Provides] 
     public Light SunProvider; // drag object in inspector to set
     
@@ -40,6 +42,8 @@ This framework simplifies dependency injection, without significant performance 
 ####Usage:
 
 Have your Unity classes inherit from ExtendedMonoBehaviour. Then use the documented annotations to automatically inject your Unity dependencies.
+
+---
 
 ####Extended usage of convenience attributes:
 
