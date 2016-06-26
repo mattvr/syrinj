@@ -116,7 +116,7 @@ new MonoBehaviourInjector(this).Inject()
 
 from your MonoBehaviour (replace `this` with `myMonoBehaviour` if called externally) when you want the annotations to be evaluated.
 
-* The Provides/Inject attributes are still in development and will not yet function exactly as expected. 
+* The Provides/Inject attributes are still in development and are not fully functioning yet. If you choose to use them, ensure your providers are evaluated before injected members (by going to Edit --> Project Settings --> Script Execution order *and* ordering provider classes above injected classes in the inspector view). This step will not be required in a future version.
 
 ---
 
