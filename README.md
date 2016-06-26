@@ -22,7 +22,7 @@ public class SceneProviders : ExtendedMonoBehaviour
     public Light SunProvider; // drag object in inspector to set
     
     [Provides]
-    [FindObjectOfType(typeof(Player)]
+    [FindObjectOfType(typeof(Player))]
     public Player PlayerProvider; // provides Player object from scene
 }
 
