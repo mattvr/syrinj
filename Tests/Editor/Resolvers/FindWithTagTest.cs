@@ -16,7 +16,7 @@ namespace Syrinj.Tests.Resolvers
             [FindWithTag(TAG)] public GameObject dependency;
         }
 
-        private GameObject thing;
+        private GameObject dependency;
         private FindWithTagTestClass behaviour;
 
         [Test]
@@ -32,8 +32,8 @@ namespace Syrinj.Tests.Resolvers
             var obj = new GameObject();
             behaviour = obj.AddComponent<FindWithTagTestClass>();
 
-            thing = new GameObject();
-            thing.tag = TAG;
+            dependency = new GameObject();
+            dependency.tag = TAG;
 
             new MonoBehaviourInjector(behaviour).Inject();
         }
@@ -43,7 +43,7 @@ namespace Syrinj.Tests.Resolvers
         {
             SetUpBehaviourAndInject();
 
-            Assert.AreEqual(thing, behaviour.dependency);
+            Assert.AreEqual(dependency, behaviour.dependency);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Syrinj.Tests.Resolvers
             var obj = new GameObject();
             behaviour = obj.AddComponent<FindWithTagTestClass>();
 
-            thing = new GameObject();
+            dependency = new GameObject();
 
             new MonoBehaviourInjector(behaviour).Inject();
         }
@@ -68,7 +68,8 @@ namespace Syrinj.Tests.Resolvers
         [TearDown]
         public void TearDown()
         {
-            if (thing != null) GameObject.DestroyImmediate(thing);
+            if (dependency != null) GameObject.DestroyImmediate(dependency);
+            if (behaviour != null) GameObject.DestroyImmediate(behaviour.gameObject);
         }
     }
 }

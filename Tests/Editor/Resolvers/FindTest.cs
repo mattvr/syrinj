@@ -66,6 +66,7 @@ namespace Syrinj.Tests.Resolvers
         public void TearDown()
         {
             if (dependency != null) GameObject.DestroyImmediate(dependency);
+            if (behaviour != null) GameObject.DestroyImmediate(behaviour.gameObject);
         }
     }
 }

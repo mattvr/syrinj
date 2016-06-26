@@ -56,8 +56,6 @@ namespace Syrinj.Tests.Resolvers
         public void InjectNull()
         {
             SetUpBehaviourWithoutSceneObjectAndInject();
-
-            Assert.Null(behaviour.dependency);
         }
 
         private void SetUpBehaviourWithoutSceneObjectAndInject()
@@ -116,6 +114,8 @@ namespace Syrinj.Tests.Resolvers
         public void TearDown()
         {
             if (dependency != null) GameObject.DestroyImmediate(dependency);
+            if (behaviour != null) GameObject.DestroyImmediate(behaviour.gameObject);
+            if (specificBehaviour != null) GameObject.DestroyImmediate(specificBehaviour.gameObject);
         }
     }
 }

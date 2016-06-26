@@ -109,6 +109,13 @@ namespace Syrinj.Tests.Resolvers
 
             new MonoBehaviourInjector(specificBehaviour).Inject();
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (behaviour != null) GameObject.DestroyImmediate(behaviour.gameObject);
+            if (specificBehaviour != null) GameObject.DestroyImmediate(specificBehaviour.gameObject);
+        }
     }
 }
 
