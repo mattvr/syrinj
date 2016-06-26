@@ -8,7 +8,15 @@ namespace Syrinj.Resolvers
     {
         public object Resolve(Injectable injectable)
         {
-            return Object.FindObjectOfType(((FindObjectOfTypeAttribute) injectable.Attribute).ComponentType);
+            var attribute = (FindObjectOfTypeAttribute)injectable.Attribute;
+            if (attribute.ComponentType == null)
+            {
+                return Object.FindObjectOfType(injectable.Type);
+            }
+            else
+            {
+                return Object.FindObjectOfType(attribute.ComponentType);
+            }
         }
     }
 }

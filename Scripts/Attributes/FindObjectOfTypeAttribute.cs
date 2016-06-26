@@ -6,6 +6,11 @@ namespace Syrinj.Attributes
     {
         public Type ComponentType { get; private set; }
 
+        public FindObjectOfTypeAttribute()
+        {
+            
+        }
+
         public FindObjectOfTypeAttribute(Type componentType)
         {
             ComponentType = componentType;
