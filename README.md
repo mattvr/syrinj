@@ -7,11 +7,8 @@
 ```csharp
 public class SimpleBehaviour : ExtendedMonoBehaviour
 {
-    [GetComponent]                      private Rigidbody rigidbody;
-    [Find("Music")]                     private AudioSource musicSource;
-    [GetComponentInChildren]            private Collider collider;
-    [FindWithTag("Player")]             private GameObject player
-    [FindObjectOfType(typeof(Camera))]  private Camera camera;
+    [GetComponent]  private Rigidbody rigidbody;
+    [Find("Music")] private AudioSource musicSource;
 }
 ```
 
