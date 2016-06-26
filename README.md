@@ -7,8 +7,9 @@
 ```csharp
 public class SimpleBehaviour : ExtendedMonoBehaviour
 {
-    [GetComponent] private Rigidbody rigidbody;
-    [GetComponent] private Collider collider;
+    [GetComponent]              private Rigidbody rigidbody;
+    [GetComponentInChildren]    private Collider collider;
+    [FindWithTag("Player")]     private GameObject Player
 }
 ```
 
