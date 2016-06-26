@@ -106,15 +106,17 @@ public class ExampleInjectee : ExtendedMonoBehaviour
 ---
 ####*Notes:*
 
-The annotations are evaluated in `ExtendedMonoBehaviour.Awake()`, so don't forget to call `base.Awake()` if you override Unity's `Awake()` functionality.
+* The annotations are evaluated in `ExtendedMonoBehaviour.Awake()`, so don't forget to call `base.Awake()` if you override Unity's `Awake()` functionality.
 
-If you don't wish to use the `ExtendedMonoBehaviour` class, you just need to call: 
+* If you don't wish to use the `ExtendedMonoBehaviour` class, you just need to call: 
 
 ```csharp 
 new MonoBehaviourInjector(this).Inject()
 ```
 
 from your MonoBehaviour (replace `this` with `myMonoBehaviour` if called externally) when you want the annotations to be evaluated.
+
+* The Provides/Inject attributes are still in development and will not yet function exactly as expected. 
 
 ---
 
