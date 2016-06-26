@@ -7,9 +7,11 @@
 ```csharp
 public class SimpleBehaviour : ExtendedMonoBehaviour
 {
-    [GetComponent]              private Rigidbody rigidbody;
-    [GetComponentInChildren]    private Collider collider;
-    [FindWithTag("Player")]     private GameObject Player
+    [GetComponent]                      private Rigidbody rigidbody;
+    [Find("Music")]                     private AudioSource musicSource;
+    [GetComponentInChildren]            private Collider collider;
+    [FindWithTag("Player")]             private GameObject player
+    [FindObjectOfType(typeof(Camera))]  private Camera camera;
 }
 ```
 
@@ -31,7 +33,9 @@ public class SceneProviders : ExtendedMonoBehaviour
 
 public class SimpleBehaviour : ExtendedMonoBehaviour
 {
-    [Inject] public Light Sun; // automatically injects at runtime!
+    // these fields automatically inject at runtime!
+    
+    [Inject] public Light Sun; 
     [Inject] public Player MyPlayer;
 }
 ```
