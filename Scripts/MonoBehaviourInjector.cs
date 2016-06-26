@@ -29,6 +29,7 @@ namespace Syrinj.Injection
 
         public MonoBehaviourInjector(MonoBehaviour monoBehaviour) : this(monoBehaviour, false)
         {
+
         }
 
         public MonoBehaviourInjector(MonoBehaviour monoBehaviour, bool injectChildren) 
@@ -116,9 +117,10 @@ namespace Syrinj.Injection
             for (int i = 0; i < attributes.Count; i++)
             {
                 var provider = ProviderFactory.Create(info, behaviour);
-                if (provider != null)
+                if (provider != null && attributes[i] is ProvidesAttribute)
                 {
-                    graph.RegisterProvider(provider.Type, provider);
+                    var attribute = (ProvidesAttribute) attributes[i];
+                    graph.RegisterProvider(provider.Type, attribute.Tag, provider);
                 }
             }
         }
@@ -140,9 +142,10 @@ namespace Syrinj.Injection
                 var dependencyFromProvider = resolver.Resolve(injectable);
                 TryInject(injectable, dependencyFromProvider);
             }
-            else
+            else if (injectable.Attribute is InjectAttribute)
             {
-                var dependencyFromGraph = graph.Get(injectable.Type);
+                var attribute = (InjectAttribute) injectable.Attribute;
+                var dependencyFromGraph = graph.Get(injectable.Type, attribute.Tag);
                 TryInject(injectable, dependencyFromGraph);
             }
         }

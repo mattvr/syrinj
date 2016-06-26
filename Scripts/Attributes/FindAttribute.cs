@@ -2,7 +2,7 @@
 {
     public class FindAttribute : UnityInjectorAttribute
     {
-        public string GameObjectName { get; private set; }
+        public readonly string GameObjectName;
 
         public FindAttribute(string gameObjectName)
         {

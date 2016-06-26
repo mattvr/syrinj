@@ -4,20 +4,31 @@ using System.Linq;
 using System.Text;
 using Assets.Syrinj.Scripts.Graph;
 using Syrinj.Providers;
+using UnityEditor;
 
 namespace Syrinj.Graph
 {
     // TODO: Make proper dependency graph
     public class DependencyMap : IDependencyGraph
     {
-        public Dictionary<Type, Provider> dictionary;
+        private Dictionary<Binding, Provider> dictionary;
 
         public DependencyMap()
         {
-            dictionary = new Dictionary<Type, Provider>();
+            dictionary = new Dictionary<Binding, Provider>();
         }
 
-        public override void RegisterProvider(Type binding, Provider provider)
+        public override void RegisterProvider(Type type, Provider provider)
+        {
+            RegisterBindingProvider(new Binding(type), provider);
+        }
+
+        public override void RegisterProvider(Type type, string tag, Provider provider)
+        {
+            RegisterBindingProvider(new Binding(type, tag), provider);
+        }
+
+        private void RegisterBindingProvider(Binding binding, Provider provider)
         {
             if (!dictionary.ContainsKey(binding))
             {
@@ -25,15 +36,25 @@ namespace Syrinj.Graph
             }
             else
             {
-                //dictionary[binding] = provider;
+                //dictionary[type] = provider;
             }
         }
 
         public override object Get(Type key)
         {
-            if (dictionary.ContainsKey(key))
+            return GetFromBinding(new Binding(key));
+        }
+
+        public override object Get(Type key, string tag)
+        {
+            return GetFromBinding(new Binding(key, tag));
+        }
+
+        private object GetFromBinding(Binding binding)
+        {
+            if (dictionary.ContainsKey(binding))
             {
-                return dictionary[key].Get();
+                return dictionary[binding].Get();
             }
             else
             {

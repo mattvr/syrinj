@@ -12,6 +12,7 @@ namespace Syrinj.Caching
     public class AttributeCache
     {
         private readonly Dictionary<Type, List<MemberInfo>> cachedTypes;
+        private readonly HashSet<MemberInfo> cachedMembers;
         private readonly Dictionary<MemberInfo, List<UnityInjectorAttribute>> injectorAttributes;
         private readonly Dictionary<MemberInfo, List<UnityProviderAttribute>> providerAttributes;
 
@@ -24,7 +25,7 @@ namespace Syrinj.Caching
 
         public List<UnityInjectorAttribute> GetInjectorAttributesForMember(MemberInfo info)
         {
-            TryCacheType(info.ReflectedType);
+            TryCacheMember(info);
 
             if (injectorAttributes.ContainsKey(info))
             {
@@ -38,7 +39,7 @@ namespace Syrinj.Caching
 
         public List<UnityProviderAttribute> GetProviderAttributesForMember(MemberInfo info)
         {
-            TryCacheType(info.ReflectedType);
+            TryCacheMember(info);
 
             if (providerAttributes.ContainsKey(info))
             {
@@ -59,18 +60,18 @@ namespace Syrinj.Caching
 
         private void TryCacheType(Type type)
         {
-            if (!IsCached(type))
+            if (!IsCachedType(type))
             {
-                CacheAllMembers(type);
+                CacheType(type);
             }
         }
 
-        private bool IsCached(Type type)
+        private bool IsCachedType(Type type)
         {
             return cachedTypes.ContainsKey(type);
         }
 
-        private void CacheAllMembers(Type type)
+        private void CacheType(Type type)
         {
             var members = type.FindMembers(ValidMemberTypes(), ValidBindingFlags(), Filter,
                 typeof (UnityHelperAttribute));
@@ -98,24 +99,34 @@ namespace Syrinj.Caching
             return m.IsDefined((Type)filtercriteria, false);
         }
 
-        private void CacheMember(MemberInfo info)
+        private void TryCacheMember(MemberInfo info)
         {
-            if (!IsValidMember(info))
+            if (IsValidMember(info) && !IsCachedMember(info))
             {
-                return;
-            }
-
-            var attributes = info.GetCustomAttributes(typeof(UnityHelperAttribute), false);
-
-            for (int i = 0; i < attributes.Length; i++)
-            {
-                CacheAttribute(info, (UnityHelperAttribute)attributes[i]);
+                CacheMember(info);
             }
         }
 
         private static bool IsValidMember(MemberInfo info)
         {
             return (info.MemberType & ValidMemberTypes()) != 0;
+        }
+
+        private bool IsCachedMember(MemberInfo info)
+        {
+            return cachedMembers.Contains(info);
+        }
+
+        private void CacheMember(MemberInfo info)
+        {
+            var attributes = info.GetCustomAttributes(typeof(UnityHelperAttribute), false);
+
+            for (int i = 0; i < attributes.Length; i++)
+            {
+                CacheAttribute(info, (UnityHelperAttribute)attributes[i]);
+            }
+
+            cachedMembers.Add(info);
         }
 
         private void CacheAttribute(MemberInfo info, UnityHelperAttribute attribute)

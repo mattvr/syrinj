@@ -2,7 +2,7 @@
 {
     public class FindWithTagAttribute : UnityInjectorAttribute
     {
-        public string Tag { get; private set; }
+        public readonly string Tag;
 
         public FindWithTagAttribute(string tag)
         {

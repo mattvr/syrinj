@@ -4,7 +4,7 @@ namespace Syrinj.Attributes
 {
     public class GetComponentAttribute : UnityInjectorAttribute
     {
-        public Type ComponentType { get; private set; }
+        public readonly Type ComponentType;
 
         public GetComponentAttribute()
         {
