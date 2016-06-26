@@ -3,21 +3,7 @@
 
 ---
 
-**Using GetComponent (without Syrinj):**
-```csharp
-public class SimpleBehaviour : MonoBehaviour
-{
-    private Rigidbody rigidbody;
-    private Collider collider;
-    
-    void Awake() {
-        rigidbody = GetComponent<Rigidbody>();
-        collider = GetComponent<Collider>();
-    }
-}
-```
-
-**Using convenience attributes (with Syrinj):**
+**Convenience attributes:**
 ```csharp
 public class SimpleBehaviour : ExtendedMonoBehaviour
 {
@@ -26,7 +12,7 @@ public class SimpleBehaviour : ExtendedMonoBehaviour
 }
 ```
 
-**Easy dependency injection (using Syrinj):**
+**Simple dependency injection:**
 ```csharp
 public class SceneProviders : ExtendedMonoBehaviour // provides fields for dependency injection
 {
