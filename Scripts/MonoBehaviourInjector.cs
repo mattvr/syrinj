@@ -65,15 +65,15 @@ namespace Syrinj.Injection
             }
         }
 
-        private ExtendedMonoBehaviour[] GetAttachedComponents()
+        private MonoBehaviour[] GetAttachedComponents()
         {
             if (_injectChildren)
             {
-                return _monoBehaviour.GetComponentsInChildren<ExtendedMonoBehaviour>();
+                return _monoBehaviour.GetComponentsInChildren<MonoBehaviour>();
             }
             else
             {
-                return _monoBehaviour.GetComponents<ExtendedMonoBehaviour>();
+                return _monoBehaviour.GetComponents<MonoBehaviour>();
             }
         }
 
