@@ -84,7 +84,7 @@ public class ExampleProvider : ExtendedMonoBehaviour
     public float RandomNumberProvider 
     {
         get {
-            return Random.Range(0, 1); // define custom provider properties, this will evaluate each injection
+            return Random.RandomRange(0f, 1f); // define custom provider properties, this will evaluate each injection
         }
     }
     
