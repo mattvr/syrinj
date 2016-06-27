@@ -3,14 +3,17 @@
 
 ---
 
-* [Examples](#Examples)
-* [Set-up](#Set-up)
-* [Extended examples](#Extended examples)
-* [Notes](#Notes)
+* [Examples](#examples)
+* [Set-up](#set-up)
+* [Extended examples](#extended-examples)
+* [Documentation](#documentation)
+    * [Convenience Attributes](#convenience-attributes)
+    * [Injection Attributes](#injection-attributes)
+* [Notes](#notes)
 
 ---
 ##Examples
-**Convenience attributes:**
+####Convenience attributes:
 ```csharp
 public class SimpleBehaviour : ExtendedMonoBehaviour
 {
@@ -19,12 +22,10 @@ public class SimpleBehaviour : ExtendedMonoBehaviour
 }
 ```
 
-**Simple dependency injection:**
+####Simple dependency injection:
 ```csharp
 public class SceneProviders : MonoBehaviour 
 {
-    // these fields are providers/bindings for dependency injection
-    
     [Provides] 
     public Light SunProvider; // drag object in inspector to set
     
@@ -37,8 +38,6 @@ public class SceneProviders : MonoBehaviour
 
 public class SimpleBehaviour : MonoBehaviour
 {
-    // these fields automatically inject on Awake()
-    
     [Inject] public Light Sun; 
     [Inject] public Player MyPlayer;
 }
@@ -54,7 +53,7 @@ Create a GameObject in your scene with the Component `SceneInjector`.
 
 **For injection during runtime:**
 
-Attach the `InjectorComponent` to any GameObject which contains providers and injectors. Set the "ShouldInjectChildren" property in the inspector if you wish to inject children of the GameObject as well.
+Attach the `InjectorComponent` to any GameObject which contains providers and injectors. Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well.
 
 ---
 
@@ -96,4 +95,25 @@ public class ExampleInjectee : ExtendedMonoBehaviour
 }
 ```
 
+##Documentation
+
+#####Convenience Attributes:
+
+Attribute | Arguments | Usage
+--- | --- | ---
+`[GetComponent]`| *optional* `System.Type ComponentType` | Gets a component attached to this GameObject.
+`[GetComponentInChildren]`| *optional* `System.Type ComponentType` | Gets a component attached to this GameObject or its children.
+`[Find]` | `string GameObjectName` | Finds a GameObject in scene with a given name.
+`[FindWithTag]` | `string Tag` | Finds a GameObject in scene with a given tag.
+`[FindObjectOfType]` | `System.Type ComponentType` | Finds a component in the scene with a given type.
+
+#####Injection Attributes:
+
+| Attribute | Arguments | Usage |
+| --- | --- | --- |
+|`[Provides]`| *optional* `string Tag` | Registers a provider for a given tag and type. |
+|`[Inject]`| *optional* `string Tag` | Injects a field/property for a given tag and type. |
+
 ##Notes
+
+- Currently only active GameObjects are injected with [Inject] or the convenience attributes.
