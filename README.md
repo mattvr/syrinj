@@ -20,7 +20,7 @@
 ####Examples
 Convenience attributes:
 ```csharp
-public class SimpleBehaviour : ExtendedMonoBehaviour
+public class SimpleBehaviour : MonoBehaviour
 {
     [GetComponent]  private Rigidbody rigidbody;
     [Find("Music")] private AudioSource musicSource;
