@@ -2,7 +2,7 @@
 
 namespace Syrinj.Attributes
 {
-    public class GetComponentInChildrenAttribute : UnityInjectorAttribute
+    public class GetComponentInChildrenAttribute : UnityConvenienceAttribute
     {
         public readonly Type ComponentType;
 

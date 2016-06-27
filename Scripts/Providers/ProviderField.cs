@@ -6,7 +6,7 @@ namespace Syrinj.Providers
     {
         private FieldInfo info;
 
-        public ProviderField(FieldInfo info, object instance) : base(instance)
+        public ProviderField(FieldInfo info, object instance, string tag) : base(instance, tag)
         {
             this.info = info;
             this.Type = info.FieldType;

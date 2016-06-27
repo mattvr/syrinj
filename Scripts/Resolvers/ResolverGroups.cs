@@ -16,5 +16,13 @@ namespace Syrinj.Resolvers
             {typeof (FindWithTagAttribute),             new FindWithTagResolver()},
             {typeof (FindObjectOfTypeAttribute),        new FindObjectOfTypeResolver()},
         };
+
+        public static readonly Dictionary<Type, IResolver> GetComponentResolvers = new Dictionary<Type, IResolver>()
+        {
+            {typeof (GetComponentAttribute),            new GetComponentResolver()},
+            {typeof (GetComponentInChildrenAttribute),  new GetComponentInChildrenResolver()},
+        };
+
+        public static readonly Dictionary<Type, IResolver> Empty = new Dictionary<Type, IResolver>();
     }
 }

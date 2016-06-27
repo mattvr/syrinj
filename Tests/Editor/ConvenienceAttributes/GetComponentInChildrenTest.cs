@@ -4,7 +4,7 @@ using Syrinj.Attributes;
 using Syrinj.Exceptions;
 using Syrinj.Injection;
 
-namespace Syrinj.Tests.Resolvers
+namespace Syrinj.Tests.ConvenienceAttributes
 {
     [TestFixture]
     internal class GetComponentInChildrenTest
@@ -40,7 +40,7 @@ namespace Syrinj.Tests.Resolvers
             child.transform.SetParent(obj.transform);
             child.AddComponent<AudioSource>();
 
-            new MonoBehaviourInjector(behaviour).Inject();
+            new GameObjectInjector(behaviour.gameObject).Inject();
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace Syrinj.Tests.Resolvers
             var child = new GameObject();
             child.transform.SetParent(obj.transform);
 
-            new MonoBehaviourInjector(behaviour).Inject();
+            new GameObjectInjector(behaviour.gameObject).Inject();
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Syrinj.Tests.Resolvers
 
             obj.AddComponent<BoxCollider>();
 
-            new MonoBehaviourInjector(specificBehaviour).Inject();
+            new GameObjectInjector(specificBehaviour.gameObject).Inject();
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace Syrinj.Tests.Resolvers
             var obj = new GameObject();
             specificBehaviour = obj.AddComponent<SpecificGetComponentInChildrenTestClass>();
 
-            new MonoBehaviourInjector(specificBehaviour).Inject();
+            new GameObjectInjector(specificBehaviour.gameObject).Inject();
         }
 
         [TearDown]

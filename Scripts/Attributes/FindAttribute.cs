@@ -1,6 +1,6 @@
 ﻿namespace Syrinj.Attributes
 {
-    public class FindAttribute : UnityInjectorAttribute
+    public class FindAttribute : UnityConvenienceAttribute
     {
         public readonly string GameObjectName;
 

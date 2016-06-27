@@ -1,6 +1,6 @@
 ﻿namespace Syrinj.Attributes
 {
-    public class FindWithTagAttribute : UnityInjectorAttribute
+    public class FindWithTagAttribute : UnityConvenienceAttribute
     {
         public readonly string Tag;
 

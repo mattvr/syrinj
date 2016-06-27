@@ -2,7 +2,7 @@
 
 namespace Syrinj.Attributes
 {
-    public abstract class UnityProviderAttribute : UnityHelperAttribute
+    public abstract class UnityProviderAttribute : UnityDependencyAttribute
     {
 
     }

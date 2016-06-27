@@ -3,7 +3,7 @@
 namespace Syrinj.Attributes
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public abstract class UnityHelperAttribute : Attribute
+    public abstract class UnityDependencyAttribute : Attribute
     {
 
     }

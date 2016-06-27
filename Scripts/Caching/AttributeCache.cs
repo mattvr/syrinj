@@ -19,6 +19,7 @@ namespace Syrinj.Caching
         public AttributeCache()
         {
             cachedTypes = new Dictionary<Type, List<MemberInfo>>();
+            cachedMembers = new HashSet<MemberInfo>();
             injectorAttributes = new Dictionary<MemberInfo, List<UnityInjectorAttribute>>();
             providerAttributes = new Dictionary<MemberInfo, List<UnityProviderAttribute>>();
         }
@@ -74,7 +75,7 @@ namespace Syrinj.Caching
         private void CacheType(Type type)
         {
             var members = type.FindMembers(ValidMemberTypes(), ValidBindingFlags(), Filter,
-                typeof (UnityHelperAttribute));
+                typeof (UnityDependencyAttribute));
 
             for (int i = 0; i < members.Length; i++)
             {
@@ -119,17 +120,17 @@ namespace Syrinj.Caching
 
         private void CacheMember(MemberInfo info)
         {
-            var attributes = info.GetCustomAttributes(typeof(UnityHelperAttribute), false);
+            var attributes = info.GetCustomAttributes(typeof(UnityDependencyAttribute), false);
 
             for (int i = 0; i < attributes.Length; i++)
             {
-                CacheAttribute(info, (UnityHelperAttribute)attributes[i]);
+                CacheAttribute(info, (UnityDependencyAttribute)attributes[i]);
             }
 
             cachedMembers.Add(info);
         }
 
-        private void CacheAttribute(MemberInfo info, UnityHelperAttribute attribute)
+        private void CacheAttribute(MemberInfo info, UnityDependencyAttribute attribute)
         {
             if (IsInjectorAttribute(attribute))
             {

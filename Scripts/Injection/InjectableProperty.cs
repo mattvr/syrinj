@@ -8,7 +8,7 @@ namespace Syrinj.Injection
     {
         private PropertyInfo _propertyInfo;
 
-        public InjectableProperty(PropertyInfo propertyInfo, Type type, Attribute attribute, MonoBehaviour monoBehaviour) : base(type, attribute, monoBehaviour)
+        public InjectableProperty(PropertyInfo propertyInfo, Type type, MonoBehaviour monoBehaviour, string tag, Attribute attribute) : base(type, monoBehaviour, tag, attribute)
         {
             _propertyInfo = propertyInfo;
         }

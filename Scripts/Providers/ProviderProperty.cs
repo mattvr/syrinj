@@ -6,7 +6,7 @@ namespace Syrinj.Providers
     {
         private PropertyInfo info;
 
-        public ProviderProperty(PropertyInfo info, object instance) : base(instance)
+        public ProviderProperty(PropertyInfo info, object instance, string tag) : base(instance, tag)
         {
             this.info = info;
             this.Type = info.PropertyType;

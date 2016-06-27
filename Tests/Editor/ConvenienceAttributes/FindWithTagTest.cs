@@ -4,7 +4,7 @@ using Syrinj.Exceptions;
 using Syrinj.Injection;
 using UnityEngine;
 
-namespace Syrinj.Tests.Resolvers
+namespace Syrinj.Tests.ConvenienceAttributes
 {
     [TestFixture]
     internal class FindWithTagTest
@@ -35,7 +35,7 @@ namespace Syrinj.Tests.Resolvers
             dependency = new GameObject();
             dependency.tag = TAG;
 
-            new MonoBehaviourInjector(behaviour).Inject();
+            new GameObjectInjector(behaviour.gameObject).Inject();
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace Syrinj.Tests.Resolvers
 
             dependency = new GameObject();
 
-            new MonoBehaviourInjector(behaviour).Inject();
+            new GameObjectInjector(behaviour.gameObject).Inject();
         }
 
         [TearDown]

@@ -4,7 +4,7 @@ using Syrinj.Exceptions;
 using Syrinj.Injection;
 using UnityEngine;
 
-namespace Syrinj.Tests.Resolvers
+namespace Syrinj.Tests.ConvenienceAttributes
 {
     [TestFixture]
     internal class FindTest
@@ -34,7 +34,7 @@ namespace Syrinj.Tests.Resolvers
 
             dependency = new GameObject(NAME);
 
-            new MonoBehaviourInjector(behaviour).Inject();
+            new GameObjectInjector(behaviour.gameObject).Inject();
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace Syrinj.Tests.Resolvers
             var obj = new GameObject();
             behaviour = obj.AddComponent<FindTestClass>();
 
-            new MonoBehaviourInjector(behaviour).Inject();
+            new GameObjectInjector(behaviour.gameObject).Inject();
         }
 
         [TearDown]

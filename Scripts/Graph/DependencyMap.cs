@@ -2,63 +2,126 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assets.Syrinj.Scripts.Graph;
+using Syrinj.Injection;
 using Syrinj.Providers;
-using UnityEditor;
+using Syrinj.Resolvers;
 
 namespace Syrinj.Graph
 {
-    // TODO: Make proper dependency graph
-    public class DependencyMap : IDependencyGraph
+    public class DependencyMap
     {
-        private Dictionary<Binding, Provider> dictionary;
+        protected class InjectionKey
+        {
+            public readonly Type Type;
+            public readonly string Tag;
+
+            public InjectionKey(Type type)
+            {
+                this.Type = type;
+            }
+
+            public InjectionKey(Type type, string tag)
+            {
+                this.Type = type;
+                this.Tag = tag;
+            }
+
+            public override bool Equals(object obj)
+            {
+                var binding = obj as InjectionKey;
+                if (binding == null)
+                {
+                    return false;
+                }
+                return binding.Type == this.Type && binding.Tag == this.Tag;
+            }
+
+            public override int GetHashCode()
+            {
+                return 7 * Type.GetHashCode() + (Tag != null ? 23 * Tag.GetHashCode() : 29);
+            }
+        }
+
+        private Dictionary<InjectionKey, IResolver> resolverDependencies;
+        private Dictionary<InjectionKey, Provider> providerDependencies;
+        private List<Injectable> resolvableDependents;
+        private List<Injectable> providableDependents;
 
         public DependencyMap()
         {
-            dictionary = new Dictionary<Binding, Provider>();
+            resolverDependencies = new Dictionary<InjectionKey, IResolver>();
+            providerDependencies = new Dictionary<InjectionKey, Provider>();
+            resolvableDependents = new List<Injectable>();
+            providableDependents = new List<Injectable>();
         }
 
-        public override void RegisterProvider(Type type, Provider provider)
+        public List<Injectable> UnloadResolvableDependents()
         {
-            RegisterBindingProvider(new Binding(type), provider);
+            var temp = resolvableDependents;
+            resolvableDependents = new List<Injectable>();
+            return temp;
         }
 
-        public override void RegisterProvider(Type type, string tag, Provider provider)
+        public List<Injectable> UnloadProvidableDependents()
         {
-            RegisterBindingProvider(new Binding(type, tag), provider);
+            var temp = providableDependents;
+            providableDependents = new List<Injectable>();
+            return temp;
         }
 
-        private void RegisterBindingProvider(Binding binding, Provider provider)
+        public void RegisterInjectionDependent(Injectable injectable)
         {
-            if (!dictionary.ContainsKey(binding))
+            providableDependents.Add(injectable);
+        }
+
+        public void RegisterConvenienceDependent(Injectable injectable)
+        {
+            resolvableDependents.Add(injectable);
+        }
+
+        public object ResolveDependency(Injectable injectable)
+        {
+            var key = new InjectionKey(injectable.Type);
+            if (resolverDependencies.ContainsKey(key))
             {
-                dictionary.Add(binding, provider);
+                return resolverDependencies[key].Resolve(injectable);
             }
-            else
+            return null;
+        }
+
+        public object ProvideDependency(Injectable injectable)
+        {
+            var key = new InjectionKey(injectable.Type, injectable.Tag);
+            if (providerDependencies.ContainsKey(key))
             {
-                //dictionary[type] = provider;
+                return providerDependencies[key].Get();
+            }
+            return null;
+        }
+
+        public void RegisterResolver(Type type, IResolver resolver)
+        {
+            RegisterBindingResolver(new InjectionKey(type), resolver);
+        }
+
+        public void RegisterProvider(Type type, string tag, Provider provider)
+        {
+            RegisterBindingProvider(new InjectionKey(type, tag), provider);
+        }
+
+        private void RegisterBindingResolver(InjectionKey injectionKey, IResolver resolver)
+        {
+            if (!providerDependencies.ContainsKey(injectionKey))
+            {
+                resolverDependencies.Add(injectionKey, resolver);
             }
         }
 
-        public override object Get(Type key)
+        private void RegisterBindingProvider(InjectionKey injectionKey, Provider provider)
         {
-            return GetFromBinding(new Binding(key));
-        }
-
-        public override object Get(Type key, string tag)
-        {
-            return GetFromBinding(new Binding(key, tag));
-        }
-
-        private object GetFromBinding(Binding binding)
-        {
-            if (dictionary.ContainsKey(binding))
+            if (!providerDependencies.ContainsKey(injectionKey))
             {
-                return dictionary[binding].Get();
-            }
-            else
-            {
-                return null;
+                providerDependencies.Add(injectionKey, provider);
             }
         }
     }

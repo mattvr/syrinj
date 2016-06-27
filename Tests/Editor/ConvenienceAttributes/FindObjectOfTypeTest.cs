@@ -40,7 +40,7 @@ namespace Syrinj.Tests.ConvenienceAttributes
             dependency = new GameObject("Test");
             dependency.AddComponent<AudioSource>();
 
-            new MonoBehaviourInjector(behaviour).Inject();
+            new GameObjectInjector(behaviour.gameObject).Inject();
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace Syrinj.Tests.ConvenienceAttributes
             var obj = new GameObject();
             behaviour = obj.AddComponent<FindObjectOfTypeTestClass>();
 
-            new MonoBehaviourInjector(behaviour).Inject();
+            new GameObjectInjector(behaviour.gameObject).Inject();
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Syrinj.Tests.ConvenienceAttributes
             dependency = new GameObject();
             dependency.AddComponent<BoxCollider>();
 
-            new MonoBehaviourInjector(specificBehaviour).Inject();
+            new GameObjectInjector(specificBehaviour.gameObject).Inject();
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace Syrinj.Tests.ConvenienceAttributes
 
             dependency = new GameObject();
 
-            new MonoBehaviourInjector(specificBehaviour).Inject();
+            new GameObjectInjector(specificBehaviour.gameObject).Inject();
         }
 
         [TearDown]
