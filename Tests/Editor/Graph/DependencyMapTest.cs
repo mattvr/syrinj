@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Reflection;
 using NUnit.Framework;
+using Syrinj.Attributes;
 using Syrinj.Graph;
+using Syrinj.Injection;
 using Syrinj.Providers;
+using Syrinj.Resolvers;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Syrinj.Tests.Graph
@@ -10,79 +14,98 @@ namespace Syrinj.Tests.Graph
     [TestFixture]
     public class DependencyMapTest
     {
-        /*
-        public class MockClass
+        public class MockProvider
         {
-            public AudioSource AudioSourceA;
-            public AudioSource AudioSourceB { get; set; }
-            public BoxCollider BoxCollider;
-            public Collider Collider { get; set; }
+            [Provides] public AudioSource audioSourceProvide;
+            [Inject] public AudioSource audioSourceInject;
         }
 
-        private const string TAG = "TEST_TAG";
-        
         private DependencyMap map;
-        private Provider providerA;
-        private Provider providerB;
-        private Provider providerC;
+        private MockProvider providerObject;
 
         [SetUp]
-        public void Setup()
+        public void SetUp()
         {
-            var mockClass = new MockClass();
-            var audioSourceA = mockClass.GetType().GetField("AudioSourceA");
-            var audioSourceB = mockClass.GetType().GetProperty("AudioSourceB");
-            var boxCollider = mockClass.GetType().GetField("BoxCollider");
-
-            providerA = new ProviderField(audioSourceA, mockClass);
-            providerB = new ProviderProperty(audioSourceB, mockClass);
-            providerC = new ProviderField(boxCollider, mockClass);
-
             map = new DependencyMap();
-            map.RegisterProvider(typeof(AudioSource), providerA);
-            map.RegisterProvider(typeof(AudioSource), TAG, providerB);
-
-            map.RegisterProvider(typeof(BoxCollider), providerC);
-            map.RegisterProvider(typeof(Collider), providerB);
+            providerObject = new MockProvider();
         }
 
         [Test]
-        public void TestProviderRegistered()
+        public void TestRegisterResolver()
         {
-            Assert.NotNull(map.Get(typeof(AudioSource)));
-            Assert.AreEqual(providerA, map.Get(typeof(AudioSource)));
+            var resolver = new GetComponentResolver();
+            var injectable = new InjectableField(null, null, null, null, new GetComponentAttribute());
+
+            map.RegisterResolver(typeof(GetComponentAttribute), resolver);
+
+            Assert.AreEqual(resolver, map.GetResolverForDependency(injectable));
         }
 
         [Test]
-        public void TestProviderNotRegistered()
+        public void TestUnregisteredResolver()
         {
-            Assert.IsNull(map.Get(typeof(Camera)));
+            var injectable = new InjectableField(null, null, null, null, new GetComponentAttribute());
+
+            Assert.Null(map.GetResolverForDependency(injectable));
         }
 
         [Test]
-        public void TestTaggedProviderRegistered()
+        public void TestRegisterProvider()
         {
-            Assert.NotNull(map.Get(typeof(AudioSource), TAG));
-            Assert.AreEqual(providerB, map.Get(typeof (AudioSource), TAG));
+            var provider = ProviderFactory.Create(providerObject.GetType().GetField("audioSourceProvide"), providerObject, null);
+            var injectable = InjectableFactory.Create(providerObject.GetType().GetField("audioSourceInject"),
+                null, null, null);
+
+            map.RegisterProvider(typeof(AudioSource), null, provider);
+
+            Assert.AreEqual(provider, map.GetProviderForDependency(injectable));
         }
 
         [Test]
-        public void TestTaggedProviderNotRegistered()
+        public void TestUnregisteredProvider()
         {
-            Assert.IsNull(map.Get(typeof(AudioSource), TAG + "_SUFFIX"));
+            var injectable = InjectableFactory.Create(providerObject.GetType().GetField("audioSourceInject"),
+                null, null, null);
+
+            Assert.Null(map.GetProviderForDependency(injectable));
         }
 
         [Test]
-        public void TestTaggedProviderDifferentThanUntagged()
+        public void TestRegisterProvidableDependents()
         {
-            Assert.AreNotEqual(map.Get(typeof(AudioSource)), map.Get(typeof(AudioSource), TAG));
+            var injectable = new InjectableField(null, null, null, null, null);
+            map.RegisterProvidableDependent(injectable);
+
+            Assert.AreEqual(injectable, map.UnloadProvidableDependents()[0]);
         }
 
         [Test]
-        public void TestRegisteredSubTypeDifferent()
+        public void TestRegisterResolvableDependents()
         {
-            Assert.AreNotEqual(map.Get(typeof(BoxCollider)), map.Get(typeof(Collider)));
+            var injectable = new InjectableField(null, null, null, null, null);
+            map.RegisterResolvableDependent(injectable);
+
+            Assert.AreEqual(injectable, map.UnloadResolvableDependents()[0]);
         }
-        */
+
+        [Test]
+        public void TestUnloadProvidableDependents()
+        {
+            var injectable = new InjectableField(null, null, null, null, null);
+            map.RegisterProvidableDependent(injectable);
+
+            map.UnloadProvidableDependents();
+            Assert.AreEqual(0, map.UnloadProvidableDependents().Count);
+        }
+
+        [Test]
+        public void TestUnloadResolvableDependents()
+        {
+            var injectable = new InjectableField(null, null, null, null, null);
+            map.RegisterResolvableDependent(injectable);
+
+            map.UnloadResolvableDependents();
+            Assert.AreEqual(0, map.UnloadResolvableDependents().Count);
+        }
     }
 }

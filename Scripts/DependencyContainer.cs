@@ -82,13 +82,24 @@ namespace Syrinj
 
         private void TryInjectResolvable(Injectable injectable)
         {
-            var dependency = dependencyMap.ResolveDependency(injectable);
+            var resolver = dependencyMap.GetResolverForDependency(injectable);
+            if (resolver == null)
+            {
+                throw new InjectionException(injectable.MonoBehaviour, "Could not find resolver for " + injectable);
+            }
+            var dependency = resolver.Resolve(injectable);
             TryInject(injectable, dependency);
         }
 
         private void TryInjectProvidable(Injectable injectable)
         {
-            var dependency = dependencyMap.ProvideDependency(injectable);
+            var provider = dependencyMap.GetProviderForDependency(injectable);
+            if (provider == null)
+            {
+                throw new InjectionException(injectable.MonoBehaviour, "Could not find provider for " + injectable);
+            }
+
+            var dependency = provider.Get();
             TryInject(injectable, dependency);
         }
 

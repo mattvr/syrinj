@@ -67,32 +67,32 @@ namespace Syrinj.Graph
             return temp;
         }
 
-        public void RegisterInjectionDependent(Injectable injectable)
+        public void RegisterProvidableDependent(Injectable injectable)
         {
             providableDependents.Add(injectable);
         }
 
-        public void RegisterConvenienceDependent(Injectable injectable)
+        public void RegisterResolvableDependent(Injectable injectable)
         {
             resolvableDependents.Add(injectable);
         }
 
-        public object ResolveDependency(Injectable injectable)
+        public IResolver GetResolverForDependency(Injectable injectable)
         {
             var type = injectable.Attribute.GetType();
             if (resolverDependencies.ContainsKey(type))
             {
-                return resolverDependencies[type].Resolve(injectable);
+                return resolverDependencies[type];
             }
             return null;
         }
 
-        public object ProvideDependency(Injectable injectable)
+        public Provider GetProviderForDependency(Injectable injectable)
         {
             var key = new InjectionKey(injectable.Type, injectable.Tag);
             if (providerDependencies.ContainsKey(key))
             {
-                return providerDependencies[key].Get();
+                return providerDependencies[key];
             }
             return null;
         }

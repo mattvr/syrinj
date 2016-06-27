@@ -84,11 +84,11 @@ namespace Syrinj.Reflection
 
             if (injectable.Attribute is UnityConvenienceAttribute)
             {
-                dependencyMap.RegisterConvenienceDependent(injectable);
+                dependencyMap.RegisterResolvableDependent(injectable);
             }
             else
             {
-                throw new DependencyException(injectable.MonoBehaviour, "A provider cannot be annotated with [Inject] " + injectable.Type);
+                throw new InjectionException(injectable.MonoBehaviour, "A provider cannot be annotated with [Inject] " + injectable.Type);
             }
         }
 
@@ -96,11 +96,11 @@ namespace Syrinj.Reflection
         {
             if (injectable.Attribute is UnityConvenienceAttribute)
             {
-                dependencyMap.RegisterConvenienceDependent(injectable);
+                dependencyMap.RegisterResolvableDependent(injectable);
             }
             else if (injectable.Attribute is InjectAttribute)
             {
-                dependencyMap.RegisterInjectionDependent(injectable);
+                dependencyMap.RegisterProvidableDependent(injectable);
             }
         }
 
