@@ -56,7 +56,7 @@ Syrinj is a small package to make creating objects simpler in Unity.
 
 It provides convenient attributes, such as `[GetComponent]` which automatically tell your MonoBehaviours where to find their dependencies. 
 
-For more customizable or shared dependencies, Syrinj allows you to specify providers and injection sites. See the [extended examples](#extended-examples) for how to do this. You can even mix attributes like `[GetComponent]` with a `[Provider]`, so that the `GetComponent<T>` method only runs once!
+For more customizable or shared dependencies, Syrinj allows you to specify providers and injection sites. See the [extended examples](#extended-examples) for how to do this. You can even mix attributes like `[GetComponent]` with a `[Provider]`, so that the `GetComponent()` method only runs once!
 
 ####Why use this?
 
@@ -76,7 +76,9 @@ Create a GameObject in your scene with the Component `SceneInjector`.
 
 **For injection during runtime:**
 
-Attach the `InjectorComponent` to any GameObject which contains providers and injectors. Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well.
+Attach the `InjectorComponent` to any GameObject which contains providers and injectors. 
+
+Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well.
 
 ---
 
