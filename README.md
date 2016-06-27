@@ -3,17 +3,22 @@
 
 ---
 
-* [Examples](#examples)
+* [Introduction](#introduction)
+   * [Examples](#examples)
+   * [What is this?](#what-is-this)
+   * [Why use this?](#why-use-this)
 * [Set-up](#set-up)
-* [Extended examples](#extended-examples)
 * [Documentation](#documentation)
-    * [Convenience Attributes](#convenience-attributes)
-    * [Injection Attributes](#injection-attributes)
+   * [Extended examples](#extended-examples)
+   * [Convenience attributes](#convenience-attributes)
+   * [Injection attributes](#injection-attributes)
 * [Notes](#notes)
 
 ---
-##Examples
-####Convenience attributes:
+##Introduction
+
+####Examples
+**Convenience attributes:**
 ```csharp
 public class SimpleBehaviour : ExtendedMonoBehaviour
 {
@@ -22,7 +27,7 @@ public class SimpleBehaviour : ExtendedMonoBehaviour
 }
 ```
 
-####Simple dependency injection:
+**Simple dependency injection:**
 ```csharp
 public class SceneProviders : MonoBehaviour 
 {
@@ -45,6 +50,24 @@ public class SimpleBehaviour : MonoBehaviour
 
 ---
 
+####What is this?
+
+Syrinj is a small package to make creating objects simpler in Unity.
+
+It provides convenient attributes, such as `[GetComponent]` which automatically tell your MonoBehaviours where to find their dependencies. 
+
+For more customizable or shared dependencies, Syrinj allows you to specify providers and injection sites. See the [extended examples](#extended-examples) for how to do this. You can even mix attributes like `[GetComponent]` with a `[Provider]`, so that the `GetComponent<T>` method only runs once!
+
+####Why use this?
+
+One option is to use Unity's inspector to inject dependencies. This seems to be the most common approach. However, errors often emerge as you drag-n-drop a tangled web of MonoBehaviours around your scene. These dependencies ought to be specified in your code, not in an editor.
+
+Another option is to use other DI/IoC frameworks made for Unity. These are often bulky or impractical. Other frameworks require you to write lots of factory classes and binding logic. You may even have to re-imagine your project's design to integrate these alternatives.
+
+Syrinj is much simpler. No reworking of your entire codebase or throwaway code required. Simply annotate the fields and methods of your MonoBehaviours, and everything will be connected for you.
+
+---
+
 ##Set-up
 
 **For injection on scene load:**
@@ -57,7 +80,9 @@ Attach the `InjectorComponent` to any GameObject which contains providers and in
 
 ---
 
-##Extended examples
+##Documentation
+
+####Extended examples
 ```csharp
 public class ExampleProvider : ExtendedMonoBehaviour
 {
@@ -95,24 +120,22 @@ public class ExampleInjectee : ExtendedMonoBehaviour
 }
 ```
 
-##Documentation
-
-#####Convenience Attributes:
+#####Convenience attributes:
 
 Attribute | Arguments | Usage
 --- | --- | ---
-`[GetComponent]`| *optional* `System.Type ComponentType` | Gets a component attached to this GameObject.
-`[GetComponentInChildren]`| *optional* `System.Type ComponentType` | Gets a component attached to this GameObject or its children.
+`[GetComponent]`| *opt.* `System.Type ComponentType` | Gets a component attached to this GameObject.
+`[GetComponentInChildren]`| *opt.* `System.Type ComponentType` | Gets a component attached to this GameObject or its children.
 `[Find]` | `string GameObjectName` | Finds a GameObject in scene with a given name.
 `[FindWithTag]` | `string Tag` | Finds a GameObject in scene with a given tag.
 `[FindObjectOfType]` | `System.Type ComponentType` | Finds a component in the scene with a given type.
 
-#####Injection Attributes:
+#####Injection attributes:
 
 | Attribute | Arguments | Usage |
 | --- | --- | --- |
-|`[Provides]`| *optional* `string Tag` | Registers a provider for a given tag and type. |
-|`[Inject]`| *optional* `string Tag` | Injects a field/property for a given tag and type. |
+|`[Provides]`| *opt.* `string Tag` | Registers a provider for a given tag and type. |
+|`[Inject]`| *opt.* `string Tag` | Injects a field/property for a given tag and type. |
 
 ##Notes
 
