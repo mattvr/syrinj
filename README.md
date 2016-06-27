@@ -3,6 +3,13 @@
 
 ---
 
+* [Examples](#Examples)
+* [Set-up](#Set-up)
+* [Extended examples](#Extended examples)
+* [Notes](#Notes)
+
+---
+##Examples
 **Convenience attributes:**
 ```csharp
 public class SimpleBehaviour : ExtendedMonoBehaviour
@@ -14,7 +21,7 @@ public class SimpleBehaviour : ExtendedMonoBehaviour
 
 **Simple dependency injection:**
 ```csharp
-public class SceneProviders : ExtendedMonoBehaviour 
+public class SceneProviders : MonoBehaviour 
 {
     // these fields are providers/bindings for dependency injection
     
@@ -28,51 +35,30 @@ public class SceneProviders : ExtendedMonoBehaviour
 
 // ...
 
-public class SimpleBehaviour : ExtendedMonoBehaviour
+public class SimpleBehaviour : MonoBehaviour
 {
-    // these fields automatically inject at runtime!
+    // these fields automatically inject on Awake()
     
     [Inject] public Light Sun; 
     [Inject] public Player MyPlayer;
 }
 ```
 
-####Explanation:
+---
 
-This framework simplifies dependency injection, without significant performance overhead or set-up. 
+##Set-up
 
-####Usage:
+**For injection on scene load:**
 
-Have your Unity classes inherit from ExtendedMonoBehaviour. Then use the documented annotations to automatically inject your Unity dependencies.
+Create a GameObject in your scene with the Component `SceneInjector`. 
+
+**For injection during runtime:**
+
+Attach the `InjectorComponent` to any GameObject which contains providers and injectors. Set the "ShouldInjectChildren" property in the inspector if you wish to inject children of the GameObject as well.
 
 ---
 
-####Extended usage of convenience attributes:
-
-```csharp
-public class ExampleAttributeUser : ExtendedMonoBehaviour
-{
-    [GetComponent] 
-    private Rigidbody rigidbody; // automatically caches Rigidbody on this object
-
-    [GetComponent(typeof(CapsuleCollider))]
-    public Collider ParticularCollider;
-
-    [Find("Canvas")]
-    public GameObject UIRoot;
-    
-    [FindWithTag("Player")]
-    private GameObject Player { get; set; } // works with properties, as long as they can be set
-    
-    [FindObjectOfType(typeof(Camera))]
-    private Camera Camera;
-
-    [GetComponentInChildren]
-    private AudioSource ChildAudioSource;
-}
-```
-
-####Extended usage of dependency injection:
+##Extended examples
 ```csharp
 public class ExampleProvider : ExtendedMonoBehaviour
 {
@@ -84,8 +70,8 @@ public class ExampleProvider : ExtendedMonoBehaviour
     public float RandomNumberProvider 
     {
         get {
-            return Random.RandomRange(0f, 1f); // define custom provider properties, this will evaluate each injection
-        }
+            return Random.RandomRange(0f, 1f); 
+        } // define custom provider properties, these evaluate each injection
     }
     
     [Provides]
@@ -97,29 +83,17 @@ public class ExampleProvider : ExtendedMonoBehaviour
 public class ExampleInjectee : ExtendedMonoBehaviour
 {
     // each field will be set on Awake()
+    
     [Inject] private Canvas UIRoot;
     [Inject] private float RandomNumber;
     [Inject] private AudioSource MusicSource;
+    
+    [GetComponent] 
+    private Rigidbody rigidbody; // automatically caches Rigidbody on this object
+    
+    [FindWithTag("Player")]
+    private GameObject Player { get; set; } // works with properties, as long as they can be set
 }
 ```
 
----
-####*Notes:*
-
-* The annotations are evaluated in `ExtendedMonoBehaviour.Awake()`, so don't forget to call `base.Awake()` if you override Unity's `Awake()` functionality.
-
-* If you don't wish to use the `ExtendedMonoBehaviour` class, you just need to call: 
-
-```csharp 
-new MonoBehaviourInjector(this).Inject()
-```
-
-from your MonoBehaviour (replace `this` with `myMonoBehaviour` if called externally) when you want the annotations to be evaluated.
-
-* The Provides/Inject attributes are still in development and are not fully functioning yet. If you choose to use them, ensure your providers are evaluated before injected members (by going to Edit --> Project Settings --> Script Execution order *and* ordering provider classes above injected classes in the inspector view). This step will not be required in a future version.
-
----
-
-####TODO:
-* Add tests!
-* Implement dependency graph
+##Notes
