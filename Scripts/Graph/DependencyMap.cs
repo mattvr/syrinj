@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Syrinj.Injection;
 using Syrinj.Providers;
 using Syrinj.Resolvers;
 
+using Debug = UnityEngine.Debug;
 namespace Syrinj.Graph
 {
     public class DependencyMap

@@ -36,8 +36,13 @@ namespace Syrinj
         public DependencyContainer()
         {
             Instance = this;
-            dependencyMap = new DependencyMap();
             attributeCache = new AttributeCache();
+            Reset();
+        }
+
+        public void Reset()
+        {
+            dependencyMap = new DependencyMap();
             memberEvaluator = new MemberEvaluator(attributeCache, dependencyMap);
 
             RegisterDefaultDependencyResolvers();
