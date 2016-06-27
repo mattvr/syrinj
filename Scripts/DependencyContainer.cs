@@ -94,7 +94,7 @@ namespace Syrinj
         {
             if (!IsValidDependency(injectable, dependency))
             {
-                throw new InjectionException(injectable.MonoBehaviour, "Could not find dependency for " + injectable);
+                throw new InjectionException(injectable.MonoBehaviour, "Could not get dependency for " + injectable);
             }
 
             injectable.Inject(dependency);

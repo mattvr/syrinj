@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Syrinj.Injection;
 using Syrinj.Providers;
 using Syrinj.Resolvers;
@@ -42,14 +40,14 @@ namespace Syrinj.Graph
             }
         }
 
-        private Dictionary<InjectionKey, IResolver> resolverDependencies;
+        private Dictionary<Type, IResolver> resolverDependencies;
         private Dictionary<InjectionKey, Provider> providerDependencies;
         private List<Injectable> resolvableDependents;
         private List<Injectable> providableDependents;
 
         public DependencyMap()
         {
-            resolverDependencies = new Dictionary<InjectionKey, IResolver>();
+            resolverDependencies = new Dictionary<Type, IResolver>();
             providerDependencies = new Dictionary<InjectionKey, Provider>();
             resolvableDependents = new List<Injectable>();
             providableDependents = new List<Injectable>();
@@ -81,10 +79,10 @@ namespace Syrinj.Graph
 
         public object ResolveDependency(Injectable injectable)
         {
-            var key = new InjectionKey(injectable.Type);
-            if (resolverDependencies.ContainsKey(key))
+            var type = injectable.Attribute.GetType();
+            if (resolverDependencies.ContainsKey(type))
             {
-                return resolverDependencies[key].Resolve(injectable);
+                return resolverDependencies[type].Resolve(injectable);
             }
             return null;
         }
@@ -101,7 +99,7 @@ namespace Syrinj.Graph
 
         public void RegisterResolver(Type type, IResolver resolver)
         {
-            RegisterBindingResolver(new InjectionKey(type), resolver);
+            RegisterBindingResolver(type, resolver);
         }
 
         public void RegisterProvider(Type type, string tag, Provider provider)
@@ -109,11 +107,11 @@ namespace Syrinj.Graph
             RegisterBindingProvider(new InjectionKey(type, tag), provider);
         }
 
-        private void RegisterBindingResolver(InjectionKey injectionKey, IResolver resolver)
+        private void RegisterBindingResolver(Type type, IResolver resolver)
         {
-            if (!providerDependencies.ContainsKey(injectionKey))
+            if (!resolverDependencies.ContainsKey(type))
             {
-                resolverDependencies.Add(injectionKey, resolver);
+                resolverDependencies.Add(type, resolver);
             }
         }
 
