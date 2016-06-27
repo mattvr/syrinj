@@ -1,5 +1,4 @@
-﻿using Syrinj.Injection;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Syrinj
 {

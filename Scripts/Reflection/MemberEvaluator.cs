@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Syrinj.Attributes;
-using Syrinj.Caching;
 using Syrinj.Exceptions;
 using Syrinj.Graph;
 using Syrinj.Injection;
 using Syrinj.Providers;
 using UnityEngine;
 
-namespace Syrinj
+namespace Syrinj.Reflection
 {
     public class MemberEvaluator
     {

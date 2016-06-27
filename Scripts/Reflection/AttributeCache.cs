@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Syrinj.Attributes;
-using UnityEngine;
-using Debug = UnityEngine.Debug;
 
-namespace Syrinj.Caching
+namespace Syrinj.Reflection
 {
     public class AttributeCache
     {
@@ -26,7 +23,7 @@ namespace Syrinj.Caching
 
         public List<UnityInjectorAttribute> GetInjectorAttributesForMember(MemberInfo info)
         {
-            TryCacheMember(info);
+            //TryCacheMember(info);
 
             if (injectorAttributes.ContainsKey(info))
             {
@@ -40,7 +37,7 @@ namespace Syrinj.Caching
 
         public List<UnityProviderAttribute> GetProviderAttributesForMember(MemberInfo info)
         {
-            TryCacheMember(info);
+            //TryCacheMember(info);
 
             if (providerAttributes.ContainsKey(info))
             {

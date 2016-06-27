@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using Syrinj.Attributes;
-using Syrinj.Caching;
+using Syrinj.Reflection;
 using Syrinj.Exceptions;
 using Syrinj.Graph;
 using Syrinj.Injection;
-using Syrinj.Providers;
 using Syrinj.Resolvers;
 using UnityEngine;
 
@@ -72,10 +68,16 @@ namespace Syrinj
         private void TryInjectAll()
         {
             var resolvables = dependencyMap.UnloadResolvableDependents();
-            resolvables.ForEach(TryInjectResolvable);
+            for (int i = 0; i < resolvables.Count; i++)
+            {
+                TryInjectResolvable(resolvables[i]);
+            }
 
             var providables = dependencyMap.UnloadProvidableDependents();
-            providables.ForEach(TryInjectProvidable);
+            for (int i = 0; i < providables.Count; i++)
+            {
+                TryInjectProvidable(providables[i]);
+            }
         }
 
         private void TryInjectResolvable(Injectable injectable)

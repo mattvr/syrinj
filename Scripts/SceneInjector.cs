@@ -18,12 +18,12 @@ namespace Syrinj.Injection
 
         public void InjectScene()
         {
-            var behaviours = GetAllBehaviours();
+            var behaviours = GetAllBehavioursInScene();
 
             InjectBehaviours(behaviours);
         }
 
-        private MonoBehaviour[] GetAllBehaviours()
+        private MonoBehaviour[] GetAllBehavioursInScene()
         {
             return GameObject.FindObjectsOfType<MonoBehaviour>();
         }

@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Syrinj.Attributes;
-using Syrinj.Caching;
-using Syrinj.Exceptions;
-using Syrinj.Resolvers;
-using Syrinj.Graph;
+﻿using System.Collections.Generic;
 using Syrinj.Injection;
-using Syrinj.Providers;
 using UnityEngine;
 
 namespace Syrinj
@@ -18,7 +10,6 @@ namespace Syrinj
 
         private readonly GameObject gameObject;
         private readonly bool injectChildren;
-        private readonly List<Injectable> injectables;
 
         public GameObjectInjector(GameObject gameObject) : this(gameObject, false)
         {
@@ -28,7 +19,6 @@ namespace Syrinj
         public GameObjectInjector(GameObject gameObject, bool injectChildren) 
         {
             this.gameObject = gameObject;
-            this.injectables = new List<Injectable>();
             this.injectChildren = injectChildren;
         }
 
