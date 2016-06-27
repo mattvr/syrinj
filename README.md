@@ -84,7 +84,7 @@ Attach the `InjectorComponent` to any GameObject which contains providers and in
 
 ####Extended examples
 ```csharp
-public class ExampleProvider : ExtendedMonoBehaviour
+public class ExampleProvider : MonoBehaviour
 {
     [Provides]
     [FindObjectOfType(typeof(Canvas))]
@@ -104,7 +104,7 @@ public class ExampleProvider : ExtendedMonoBehaviour
 
 // ...
 
-public class ExampleInjectee : ExtendedMonoBehaviour
+public class ExampleInjectee : MonoBehaviour
 {
     // each field will be set on Awake()
     
