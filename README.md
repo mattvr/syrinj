@@ -18,7 +18,7 @@
 ##Introduction
 
 ####Examples
-**Convenience attributes:**
+Convenience attributes:
 ```csharp
 public class SimpleBehaviour : ExtendedMonoBehaviour
 {
@@ -27,7 +27,7 @@ public class SimpleBehaviour : ExtendedMonoBehaviour
 }
 ```
 
-**Simple dependency injection:**
+Simple dependency injection:
 ```csharp
 public class SceneProviders : MonoBehaviour 
 {
