@@ -6,15 +6,16 @@ using Syrinj.Graph;
 using Syrinj.Injection;
 using Syrinj.Providers;
 using Syrinj.Resolvers;
+using Syrinj.Tests.Utility;
 using UnityEditor.VersionControl;
 using UnityEngine;
 
-namespace Syrinj.Tests.Graph
+namespace Syrinj.Tests.Unit
 {
     [TestFixture]
-    public class DependencyMapTest
+    internal class DependencyMapTest
     {
-        public class MockProvider
+        internal class MockProvider
         {
             [Provides] public AudioSource audioSourceProvide;
             [Inject] public AudioSource audioSourceInject;
@@ -34,7 +35,7 @@ namespace Syrinj.Tests.Graph
         public void TestRegisterResolver()
         {
             var resolver = new GetComponentResolver();
-            var injectable = new InjectableField(null, null, null, null, new GetComponentAttribute());
+            var injectable = MockInjectableFactory.Create(new GetComponentAttribute());
 
             map.RegisterResolver(typeof(GetComponentAttribute), resolver);
 
@@ -44,7 +45,7 @@ namespace Syrinj.Tests.Graph
         [Test]
         public void TestUnregisteredResolver()
         {
-            var injectable = new InjectableField(null, null, null, null, new GetComponentAttribute());
+            var injectable = MockInjectableFactory.Create(new GetComponentAttribute());
 
             Assert.Null(map.GetResolverForDependency(injectable));
         }
@@ -53,8 +54,7 @@ namespace Syrinj.Tests.Graph
         public void TestRegisterProvider()
         {
             var provider = ProviderFactory.Create(providerObject.GetType().GetField("audioSourceProvide"), providerObject, null);
-            var injectable = InjectableFactory.Create(providerObject.GetType().GetField("audioSourceInject"),
-                null, null, null);
+            var injectable = MockInjectableFactory.Create(providerObject.GetType().GetField("audioSourceInject"), typeof(AudioSource));
 
             map.RegisterProvider(typeof(AudioSource), null, provider);
 
@@ -64,8 +64,7 @@ namespace Syrinj.Tests.Graph
         [Test]
         public void TestUnregisteredProvider()
         {
-            var injectable = InjectableFactory.Create(providerObject.GetType().GetField("audioSourceInject"),
-                null, null, null);
+            var injectable = MockInjectableFactory.Create(providerObject.GetType().GetField("audioSourceInject"), typeof(AudioSource));
 
             Assert.Null(map.GetProviderForDependency(injectable));
         }
@@ -73,7 +72,7 @@ namespace Syrinj.Tests.Graph
         [Test]
         public void TestRegisterProvidableDependents()
         {
-            var injectable = new InjectableField(null, null, null, null, null);
+            var injectable = MockInjectableFactory.Create();
             map.RegisterProvidableDependent(injectable);
 
             Assert.AreEqual(injectable, map.UnloadProvidableDependents()[0]);
@@ -82,7 +81,7 @@ namespace Syrinj.Tests.Graph
         [Test]
         public void TestRegisterResolvableDependents()
         {
-            var injectable = new InjectableField(null, null, null, null, null);
+            var injectable = MockInjectableFactory.Create();
             map.RegisterResolvableDependent(injectable);
 
             Assert.AreEqual(injectable, map.UnloadResolvableDependents()[0]);
@@ -91,7 +90,7 @@ namespace Syrinj.Tests.Graph
         [Test]
         public void TestUnloadProvidableDependents()
         {
-            var injectable = new InjectableField(null, null, null, null, null);
+            var injectable = MockInjectableFactory.Create();
             map.RegisterProvidableDependent(injectable);
 
             map.UnloadProvidableDependents();
@@ -101,7 +100,7 @@ namespace Syrinj.Tests.Graph
         [Test]
         public void TestUnloadResolvableDependents()
         {
-            var injectable = new InjectableField(null, null, null, null, null);
+            var injectable = MockInjectableFactory.Create();
             map.RegisterResolvableDependent(injectable);
 
             map.UnloadResolvableDependents();
