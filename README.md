@@ -8,7 +8,6 @@
    * [Set-up](#set-up)
    * [What is this?](#what-is-this)
    * [Why use this?](#why-use-this)
-   * [Dependency injection](#dependency-injection)
 * [Documentation](#documentation)
    * [Extended examples](#extended-examples)
    * [Convenience attributes](#convenience-attributes)
