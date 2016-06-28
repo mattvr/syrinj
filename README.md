@@ -114,7 +114,7 @@ If you're a Unity developer, you may already notice a slight issue. In Unity, yo
 public class OkayHomingMissile : MonoBehaviour {
     private Player target;
     
-    public Initialize(Player target) {
+    public void Initialize(Player target) {
         this target = target;
     }
     
@@ -122,7 +122,7 @@ public class OkayHomingMissile : MonoBehaviour {
 }
 ```
 
-This is okay, but you lose the guarantee that the `OkayHomingMissile` has its dependencies right when it's created. Let's complicate it further, and imagine the `OkayHomingMissile` also creates an `Explosion` when it reaches the player! The `Explosion` needs to know who to damage, and so it receives a `Player` as well when it's created.
+This is okay, but you lose the guarantee that the `OkayHomingMissile` has its dependencies right when it's created. You have to remember to call `Initialize()` every time. Let's complicate it further, and imagine the `OkayHomingMissile` also creates an `Explosion` when it reaches the player! The `Explosion` needs to know who to damage, and so it receives a `Player` as well when it's created.
 
 ```csharp
 public class OkayHomingMissile : MonoBehaviour {
