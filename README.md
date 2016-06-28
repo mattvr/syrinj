@@ -81,7 +81,7 @@ If you're familiar with dependency injection and see how Syrinj could help your 
 
 Dependency injection is an intimidating word for a simple concept you're likely familiar with. It simply means if `ObjectA` creates `ObjectB`, then `ObjectA` resolves all of `ObjectsB`'s dependencies (i.e. fields & properties).
 
-Here's a more concrete example. Say your enemies have `RocketLauncher` class which can fire homing missiles. I will call these `GoodHomingMissile` to denote that this is a *good* way to do this. Here is how you might fire a missile at the player:
+Here's a more concrete example. Say your enemies have a `RocketLauncher` which can fire homing missiles. I will call these `GoodHomingMissile` to denote that this is a *good* way to do this. Here is how you might fire a missile at the player:
 
 ```csharp
 public class RocketLauncher {
