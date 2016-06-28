@@ -5,9 +5,10 @@
 
 * [Introduction](#introduction)
    * [Examples](#examples)
+   * [Set-up](#set-up)
    * [What is this?](#what-is-this)
    * [Why use this?](#why-use-this)
-* [Set-up](#set-up)
+   * [Dependency injection](#dependency-injection)
 * [Documentation](#documentation)
    * [Extended examples](#extended-examples)
    * [Convenience attributes](#convenience-attributes)
@@ -47,6 +48,23 @@ public class SimpleBehaviour : MonoBehaviour
     [Inject] public Player MyPlayer;
 }
 ```
+---
+
+####Set-up
+
+1. Annotate your classes with the attributes shown in the [Documentation](#documentation).
+
+2. Follow the steps below for injection on scene load and/or while running.
+
+**For injection on scene load:**
+
+Create a GameObject in your scene with the Component `SceneInjector`. 
+
+**For injection while application is running:**
+
+Attach the `InjectorComponent` to any GameObject which contains providers and injectors. 
+
+Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well.
 
 ---
 
@@ -60,25 +78,106 @@ For more customizable or shared dependencies, Syrinj allows you to specify provi
 
 ####Why use this?
 
-One option is to use Unity's inspector to inject dependencies. This seems to be the most common approach. However, errors often emerge as you drag-n-drop a tangled web of MonoBehaviours around your scene. These dependencies ought to be specified in your code, not in an editor.
+If you're familiar with dependency injection and see how Syrinj could help your project, check out the [set-up](#set-up) and [documentation](#documentation) to see more. If not, read on:
 
-Another option is to use other DI/IoC frameworks made for Unity. These are often bulky or impractical. Other frameworks require you to write lots of factory classes and binding logic. You may even have to re-imagine your project's design to integrate these alternatives.
+Dependency injection is an intimidating word for a simple concept you're likely familiar with. It simply means if `ObjectA` creates `ObjectB`, then `ObjectA` resolves all of `ObjectsB`'s dependencies (i.e. fields & properties).
 
-Syrinj is much simpler. No reworking of your entire codebase or throwaway code required. Simply annotate the fields and methods of your MonoBehaviours, and everything will be connected for you.
+Here's a more concrete example. Say your enemies have `RocketLauncher` class which can fire homing missiles. I will call these `GoodHomingMissile` to denote that this is a *good* way to do this. Here is how you might fire a missile at the player:
 
----
+```csharp
+public class RocketLauncher {
+    private Player player;
+  
+    public void Fire() {
+        var target = player;
+        var missile = new GoodHomingMissile(target);
+    }
+}
 
-##Set-up
+public class GoodHomingMissile {
+    private Player target;
+    
+    public GoodHomingMissile(Player target) {
+        this.target = target;
+    }
+    
+    public void MoveTowardsTarget() {
+        // ...
+    }
+}
+```
 
-**For injection on scene load:**
+Make sense? That's dependency injection. The `GoodHomingMissile` has a dependency of a `Player` target, and the `RocketLauncher` tells it which target to move towards on construction! This is a good practice because you know that if a `GoodHomingMissile` is created, it must have had its target specified. 
 
-Create a GameObject in your scene with the Component `SceneInjector`. 
+If you're a Unity developer, you may already notice a slight issue. In Unity, you don't instantiate objects with constructors! Instead, you call `GameObject.Instantiate()`. One workaround is to make an `Initialize()` method:
 
-**For injection during runtime:**
+```csharp
+public class OkayHomingMissile : MonoBehaviour {
+    private Player target;
+    
+    public Initialize(Player target) {
+        this target = target;
+    }
+    
+    // ...
+}
+```
 
-Attach the `InjectorComponent` to any GameObject which contains providers and injectors. 
+This is okay, but you lose the guarantee that the `OkayHomingMissile` has its dependencies right when it's created. Let's complicate it further, and imagine the `OkayHomingMissile` also creates an `Explosion` when it reaches the player! The `Explosion` needs to know who to damage, and so it receives a `Player` as well when it's created.
 
-Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well.
+```csharp
+public class OkayHomingMissile : MonoBehaviour {
+    // ...
+    
+    void Update() {
+        if (distanceToTarget() < 0.1f) {
+            var explosion = new Explosion();
+            explosion.Initialize(target);
+        }
+    }
+}
+```
+
+Now we've passed this `Player` object between three classes, and it's getting a bit difficult to keep track of. Plus, in reality your classes are going to have a lot more than one dependency. Can you imagine doing this?:
+
+```csharp
+var explosion = new Explosion(target, damage, radius, audioManager, particleManager, camera);
+```
+
+At this point, most Unity developers will settle on using Unity's inspector to set dependencies, and the infamous [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern). Neither of these solutions are inherently bad, but they can lead to code that's difficult to maintain. A homing missile in practice may end up looking like this:
+
+```csharp
+public class BadHomingMissile : MonoBehaviour {
+    public GameManager gameManager; // set in inspector
+    public ParticleSystem particles; // set in inspector
+    public AudioSource audio;
+    private int damage;
+    private Player target;
+    private RocketLauncher launcher;
+    
+    void Start() {
+        audio = this.GetComponent<AudioSource>();
+        target = Player.Instance;
+        launcher = RocketLauncher.Instance;
+    }
+}
+```
+
+There's a lot of issues with this:
+
+- Your dependencies ought to be specified in code. You hope that the `GameManager` and `ParticleSystem` are set, but you may have drag-n-dropped the wrong object. Or you may have forgotten to do it all together.
+
+- Homing missiles are now tightly coupled to Singletons (i.e. `Player.Instance` and `RocketLauncher.Instance`). How do you know the Singleton exists when `BadHomingMissile` calls `Start()`? What if later on you want more then one `RocketLauncher` or `Player`? Extending and maintaining your classes will take a lot more effort.
+
+- These fields don't need to be public (easy solution: expose private fields in the inspector with `[SerializeField]`).
+
+- If a dependency isn't met, you won't receive an informative error message about what happened.
+
+I'd argue that the **most common issue with Unity code is bad dependency management and overuse of Singletons**. Syrinj addresses all of the problems mentioned in the above exmaple.
+
+There are alternatives to Syrinj for Unity, such as [Zenject](https://github.com/modesttree/Zenject) and [StrangeIoC](http://strangeioc.github.io/strangeioc/). These are great at what they do and worth checking out if you're starting a new project. Unfortunately they can be bulky, difficult to implement in an existing project, and harder to approach. However, I'd highly recommend reading the authors' elaboration on dependency injection and inversion-of-control to become a better programmer.
+
+Syrinj allows you to write fewer lines of code, not more. You can take advantage of as many or as few of Syrinj's features as you'd like. Check out the [set-up section](#set-up) to see how easy it is to get started.
 
 ---
 
@@ -102,6 +201,12 @@ public class ExampleProvider : MonoBehaviour
     
     [Provides]
     public AudioSource MusicSourceProvider; // manually set in inspector
+    
+    [Provides("Primary")] // specify optional tags for multiple bindings of the same type
+    public Camera PrimaryCamera;
+    
+    [Provides("Secondary")]
+    public Camera SecondaryCamera;
 }
 
 // ...
@@ -113,6 +218,9 @@ public class ExampleInjectee : MonoBehaviour
     [Inject] private Canvas UIRoot;
     [Inject] private float RandomNumber;
     [Inject] private AudioSource MusicSource;
+    
+    [Inject("Primary")]     private Camera primaryCamera;
+    [Inject("Secondary")]   private Camera secondaryCamera;
     
     [GetComponent] 
     private Rigidbody rigidbody; // automatically caches Rigidbody on this object
