@@ -115,7 +115,7 @@ public class OkayHomingMissile : MonoBehaviour {
     private Player target;
     
     public void Initialize(Player target) {
-        this target = target;
+        this.target = target;
     }
     
     // ...
@@ -140,7 +140,7 @@ public class OkayHomingMissile : MonoBehaviour {
 Now we've passed this `Player` object between three classes, and it's getting a bit difficult to keep track of. Plus, in reality your classes are going to have a lot more than one dependency. Can you imagine doing this?:
 
 ```csharp
-var explosion = new Explosion(target, damage, radius, audioManager, particleManager, camera);
+explosion.Initialize(target, damage, radius, audioManager, particleManager, camera);
 ```
 
 At this point, most Unity developers will settle on using Unity's inspector to set dependencies, and the infamous [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern). Neither of these solutions are inherently bad, but they can lead to code that's difficult to maintain. A homing missile in practice may end up looking like this:
