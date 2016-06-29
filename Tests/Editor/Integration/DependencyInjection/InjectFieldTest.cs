@@ -6,10 +6,10 @@ using Syrinj.Tests.Utility;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Syrinj.Tests.Integration
+namespace Syrinj.Tests.Integration.DependencyInjection
 {
     [TestFixture]
-    internal class ProvideInjectFieldTest
+    internal class InjectFieldTest
     {
         private const string TAG = "TEST_TAG";
         private const int NUM = 31337;

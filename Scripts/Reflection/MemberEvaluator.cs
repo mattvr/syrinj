@@ -50,7 +50,7 @@ namespace Syrinj.Reflection
 
             if (attributes == null || attributes.Count == 0) return null;
 
-            return InjectableFactory.Create(info, behaviour, null, attributes[0]);
+            return InjectableFactory.Create(info, behaviour, attributes[0]);
         }
 
         private Provider GetProviderAttribute(MemberInfo info, MonoBehaviour behaviour)

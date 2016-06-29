@@ -11,8 +11,14 @@ namespace Syrinj.Injection
     public class InjectableFactory
     {
 
-        public static Injectable Create(MemberInfo info, MonoBehaviour monoBehaviour, string tag, UnityDependencyAttribute attribute)
+        public static Injectable Create(MemberInfo info, MonoBehaviour monoBehaviour, UnityDependencyAttribute attribute)
         {
+            string tag = null;
+            if (attribute is InjectAttribute)
+            {
+                tag = ((InjectAttribute) attribute).Tag;
+            }
+
             if (info.MemberType == MemberTypes.Property)
             {
                 var pInfo = (PropertyInfo)info;

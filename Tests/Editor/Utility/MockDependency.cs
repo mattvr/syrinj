@@ -31,5 +31,10 @@ namespace Syrinj.Tests.Utility
         {
             return Attribute.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return Attribute.ToString();
+        }
     }
 }

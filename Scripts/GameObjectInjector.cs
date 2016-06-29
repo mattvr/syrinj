@@ -6,7 +6,7 @@ namespace Syrinj
 {
     public class GameObjectInjector
     {
-        private static readonly HashSet<GameObject> visited = new HashSet<GameObject>(); 
+        private static HashSet<GameObject> visited = new HashSet<GameObject>(); 
 
         private readonly GameObject gameObject;
         private readonly bool injectChildren;
@@ -20,6 +20,11 @@ namespace Syrinj
         {
             this.gameObject = gameObject;
             this.injectChildren = injectChildren;
+        }
+
+        public static void ResetVisited()
+        {
+            visited = new HashSet<GameObject>();
         }
 
         public void Inject()

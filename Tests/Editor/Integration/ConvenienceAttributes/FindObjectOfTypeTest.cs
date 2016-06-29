@@ -4,7 +4,7 @@ using Syrinj.Exceptions;
 using Syrinj.Injection;
 using UnityEngine;
 
-namespace Syrinj.Tests.ConvenienceAttributes
+namespace Syrinj.Tests.Integration.ConvenienceAttributes
 {
     [TestFixture]
     internal class FindObjectOfTypeTest

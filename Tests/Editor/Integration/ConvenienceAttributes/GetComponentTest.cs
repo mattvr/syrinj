@@ -4,7 +4,7 @@ using Syrinj.Attributes;
 using Syrinj.Exceptions;
 using Syrinj.Injection;
 
-namespace Syrinj.Tests.ConvenienceAttributes
+namespace Syrinj.Tests.Integration.ConvenienceAttributes
 {
     [TestFixture]
     internal class GetComponentTest

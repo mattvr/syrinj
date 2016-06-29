@@ -46,6 +46,7 @@ namespace Syrinj
             memberEvaluator = new MemberEvaluator(attributeCache, dependencyMap);
 
             RegisterDefaultDependencyResolvers();
+            GameObjectInjector.ResetVisited();
         }
 
         private void RegisterDefaultDependencyResolvers()
