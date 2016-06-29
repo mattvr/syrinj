@@ -1,6 +1,7 @@
 ﻿using System;
+using Syrinj.Attributes;
 
-namespace Syrinj.Attributes
+namespace Syrinj
 {
     public class ProvidesAttribute : UnityProviderAttribute
     {

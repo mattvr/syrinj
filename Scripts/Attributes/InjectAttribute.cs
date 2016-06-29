@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using Syrinj.Attributes;
 
-namespace Syrinj.Attributes
+namespace Syrinj
 {
     public class InjectAttribute : UnityInjectorAttribute
     {
