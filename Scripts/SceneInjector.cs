@@ -13,6 +13,12 @@ namespace Syrinj
         void Awake()
         {
             Instance = this;
+            DependencyContainer.Instance.Reset();
+            InjectScene();
+        }
+
+        void OnLevelWasLoaded()
+        {
             InjectScene();
         }
 
