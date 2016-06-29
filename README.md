@@ -51,17 +51,17 @@ public class SimpleBehaviour : MonoBehaviour
 
 ####Set-up
 
-1. Annotate your classes with the attributes shown in the [Documentation](#documentation).
+1. Annotate your classes with the attributes shown in the [Documentation](#documentation). Add `using Syrinj.Attributes;` to the top of files which use Syrinj's attributes.
 
-2. Follow the steps below for injection on scene load and/or while running.
+3. Follow the steps below for injection on scene load and/or while running.
 
 **For injection on scene load:**
 
-Create a GameObject in your scene with the Component `SceneInjector`. 
+Create a GameObject in your scene with the Component `Syrinj.SceneInjector`. 
 
 **For injection while application is running:**
 
-Attach the `InjectorComponent` to any GameObject which contains providers and injectors. 
+Attach the `Syrinj.InjectorComponent` to any GameObject which contains providers and injectors. 
 
 Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well.
 
