@@ -28,6 +28,11 @@ namespace Syrinj.Reflection
 
         public void EvaluateMembers(MonoBehaviour behaviour)
         {
+            if (behaviour == null)
+            {
+                return;
+            }
+
             var allMembers = attributeCache.GetMembersForType(behaviour.GetType());
 
             for (int i = 0; i < allMembers.Count; i++)

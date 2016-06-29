@@ -40,7 +40,10 @@ namespace Syrinj
         {
             for (int i = 0; i < monoBehaviours.Count; i++)
             {
-                visited.Add(monoBehaviours[i].gameObject);
+                if (monoBehaviours[i] != null)
+                {
+                    visited.Add(monoBehaviours[i].gameObject);
+                }
             }
         }
 
