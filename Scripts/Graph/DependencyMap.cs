@@ -15,11 +15,6 @@ namespace Syrinj.Graph
             public readonly Type Type;
             public readonly string Tag;
 
-            public InjectionKey(Type type)
-            {
-                this.Type = type;
-            }
-
             public InjectionKey(Type type, string tag)
             {
                 this.Type = type;
@@ -29,11 +24,11 @@ namespace Syrinj.Graph
             public override bool Equals(object obj)
             {
                 var binding = obj as InjectionKey;
-                if (binding == null)
+                if (binding != null)
                 {
-                    return false;
+                    return this.Tag == binding.Tag && this.Type == binding.Type;
                 }
-                return binding.Type == this.Type && binding.Tag == this.Tag;
+                return false;
             }
 
             public override int GetHashCode()
