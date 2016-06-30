@@ -66,7 +66,7 @@ Create a GameObject in your scene with the Component `SceneInjector`.
 
 Attach the `InjectorComponent` to any GameObject which contains providers and injectors. 
 
-Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well.
+Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well. DO NOT attach another InjectorComponent to those children. `InjectorComponent`s should always reside in the parent object that is instantiated.
 
 ---
 
@@ -260,12 +260,14 @@ Attribute | Arguments | Usage
   
 A: Follow these steps in order:
 
-3. Make sure there the `[Inject]` attribute is on the proper injected field, and the `[Provides]` attribute is on the proper provider field. Ensure both are bound to the exact same `Tag` (or lack thereof) and `Type`.
+1. Make sure there the `[Inject]` attribute is on the proper injected field, and the `[Provides]` attribute is on the proper provider field. Ensure both are bound to the exact same `Tag` (or lack thereof) and `Type`.
 
 1. Your injecting/providing GameObjects must have `InjectorComponent`s attached (if created with `GameObject.Instiantiate()`) and/or a `SceneInjector` component must exist *somewhere* in the scene (if object exists in the scene initially).
 
-3. Make sure the fields or property providers aren't null! Use `Debug.Log()` and/or double-check the inspector for the object.
+2. Make sure the fields or property providers aren't null! Use `Debug.Log()` and/or double-check the inspector for the object.
  
 3. Verify the script execution order in Unity. Go to `Edit -> Project Settings -> Script Execution Order` and modify the `Syrinj.InjectorComponent` and `Syrinj.SceneInjcetor` scripts to execute **before** all other scripts. Put in a large negative number such that these two scripts before any others in the list.
 
-7. There might be some other problem. Create an issue on GitHub/message me/fix it yourself with a pull request!
+5. Do you have a hierarchy of GameObjects with multiple `InjectorComponent`s? Only the parent should have the `InjectorComponent`, with its `ShouldInjectChildren` flag set to true.
+
+8. There might be some other problem. Create an issue on GitHub/message me/fix it yourself with a pull request!
