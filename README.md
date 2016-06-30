@@ -264,10 +264,10 @@ A: Follow these steps in order:
 
 1. Your injecting/providing GameObjects must have `InjectorComponent`s attached (if created with `GameObject.Instiantiate()`) and/or a `SceneInjector` component must exist *somewhere* in the scene (if object exists in the scene initially).
 
-2. Make sure the fields or property providers aren't null! Use `Debug.Log()` and/or double-check the inspector for the object.
+2. For every object that you call `GameObject.Instantiate()` on, you should have at most ONE `InjectorComponent`. Place this component at the root GameObject, with `ShouldInjectChildren` set if necessary. 
  
-3. Verify the script execution order in Unity. Go to `Edit -> Project Settings -> Script Execution Order` and modify the `Syrinj.InjectorComponent` and `Syrinj.SceneInjcetor` scripts to execute **before** all other scripts. Put in a large negative number such that these two scripts before any others in the list.
+3. Make sure the fields or property providers aren't null! Use `Debug.Log()` and/or double-check the inspector for the object.
 
-5. For every object that you call `GameObject.Instantiate()` on, you should have at most ONE `InjectorComponent`. Place this component at the root GameObject, with `ShouldInjectChildren` set if necessary. 
+5. Verify the script execution order in Unity. Go to `Edit -> Project Settings -> Script Execution Order` and modify the `Syrinj.InjectorComponent` and `Syrinj.SceneInjcetor` scripts to execute **before** all other scripts. Put in a large negative number such that these two scripts before any others in the list.
 
 8. There might be some other problem. Create an issue on GitHub/message me/fix it yourself with a pull request!
