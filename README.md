@@ -66,7 +66,7 @@ Create a GameObject in your scene with the Component `SceneInjector`.
 
 Attach the `InjectorComponent` to any GameObject which contains providers and injectors. 
 
-Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well. DO NOT attach another InjectorComponent to those children. `InjectorComponent`s should always reside in the parent object that is instantiated.
+Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well. DO NOT attach another InjectorComponent to those children. There should be only one root `InjectorComponent` for an object created with `GameObject.Instantiate()`.
 
 ---
 
@@ -268,6 +268,6 @@ A: Follow these steps in order:
  
 3. Verify the script execution order in Unity. Go to `Edit -> Project Settings -> Script Execution Order` and modify the `Syrinj.InjectorComponent` and `Syrinj.SceneInjcetor` scripts to execute **before** all other scripts. Put in a large negative number such that these two scripts before any others in the list.
 
-5. Do you have a hierarchy of GameObjects with multiple `InjectorComponent`s? Only the parent should have the `InjectorComponent`, with its `ShouldInjectChildren` flag set to true.
+5. For every object that you call `GameObject.Instantiate()` on, you should have at most ONE `InjectorComponent`. Place this component at the root GameObject, with `ShouldInjectChildren` set if necessary. 
 
 8. There might be some other problem. Create an issue on GitHub/message me/fix it yourself with a pull request!
