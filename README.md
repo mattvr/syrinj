@@ -274,4 +274,4 @@ A: Follow these steps in order:
 
 5. Verify the script execution order in Unity. Go to `Edit -> Project Settings -> Script Execution Order` and modify the `Syrinj.InjectorComponent` and `Syrinj.SceneInjcetor` scripts to execute **before** all other scripts. Put in a large negative number such that these two scripts before any others in the list.
 
-8. There might be some other problem. Create an issue on GitHub/message me/fix it yourself with a pull request!
+8. There might be some other problem. Create an issue on GitHub/[message me](https://twitter.com/perceptron)/fix it yourself with a pull request!
