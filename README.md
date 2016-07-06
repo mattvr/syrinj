@@ -1,7 +1,11 @@
 #Syrinj
 ######**Lightweight dependency injection** & convenient attributes for Unity
 
+###[Release 1.0.0 available here!](https://github.com/mfav/syrinj/releases/tag/1.0.0)
+
 ---
+
+##Table of Contents
 
 * [Introduction](#introduction)
    * [Examples](#examples)
