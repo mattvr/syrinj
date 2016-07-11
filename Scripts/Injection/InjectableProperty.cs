@@ -8,14 +8,14 @@ namespace Syrinj.Injection
     {
         private PropertyInfo _propertyInfo;
 
-        public InjectableProperty(PropertyInfo propertyInfo, Type type, MonoBehaviour monoBehaviour, string tag, Attribute attribute) : base(type, monoBehaviour, tag, attribute)
+        public InjectableProperty(PropertyInfo propertyInfo, Type type, object obj, string tag, Attribute attribute) : base(type, obj, tag, attribute)
         {
             _propertyInfo = propertyInfo;
         }
 
         public override void Inject(object dependency)
         {
-            _propertyInfo.SetValue(MonoBehaviour, dependency, null);
+            _propertyInfo.SetValue(Object, dependency, null);
         }
 
         public override string ToString()

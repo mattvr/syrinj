@@ -1,6 +1,7 @@
 ﻿using Syrinj.Attributes;
 using Syrinj.Injection;
 using UnityEngine;
+using Syrinj.Exceptions;
 
 namespace Syrinj.Resolvers
 {
@@ -8,14 +9,20 @@ namespace Syrinj.Resolvers
     {
         public object Resolve(Injectable injectable)
         {
+            var monoBehaviour = injectable.Object as MonoBehaviour;
+            if (monoBehaviour == null)
+            {
+                throw new InjectionException(injectable.Object, "[GetComponentInChildren] annotation on a non-MonoBehaviour");
+            }
+
             var attribute = (GetComponentInChildrenAttribute) injectable.Attribute;
             if (attribute.ComponentType == null)
             {
-                return injectable.MonoBehaviour.GetComponentInChildren(injectable.Type);
+                return monoBehaviour.GetComponentInChildren(injectable.Type);
             }
             else
             {
-                return injectable.MonoBehaviour.GetComponentInChildren(attribute.ComponentType);
+                return monoBehaviour.GetComponentInChildren(attribute.ComponentType);
             }
         }
     }

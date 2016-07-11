@@ -8,14 +8,14 @@ namespace Syrinj.Injection
     {
         private FieldInfo _fieldInfo;
 
-        public InjectableField(FieldInfo fieldInfo, Type type, MonoBehaviour monoBehaviour, string tag, Attribute attribute) : base(type, monoBehaviour, tag, attribute)
+        public InjectableField(FieldInfo fieldInfo, Type type, object obj, string tag, Attribute attribute) : base(type, obj, tag, attribute)
         {
             _fieldInfo = fieldInfo;
         }
 
         public override void Inject(object dependency)
         {
-            _fieldInfo.SetValue(MonoBehaviour, dependency);
+            _fieldInfo.SetValue(Object, dependency);
         }
 
         public override string ToString()

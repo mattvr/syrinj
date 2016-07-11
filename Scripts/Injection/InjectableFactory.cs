@@ -11,7 +11,7 @@ namespace Syrinj.Injection
     public class InjectableFactory
     {
 
-        public static Injectable Create(MemberInfo info, MonoBehaviour monoBehaviour, UnityDependencyAttribute attribute)
+        public static Injectable Create(MemberInfo info, object obj, UnityDependencyAttribute attribute)
         {
             string tag = null;
             if (attribute is InjectAttribute)
@@ -22,12 +22,12 @@ namespace Syrinj.Injection
             if (info.MemberType == MemberTypes.Property)
             {
                 var pInfo = (PropertyInfo)info;
-                return new InjectableProperty(pInfo, pInfo.PropertyType, monoBehaviour, tag, attribute);
+                return new InjectableProperty(pInfo, pInfo.PropertyType, obj, tag, attribute);
             }
             else if (info.MemberType == MemberTypes.Field)
             {
                 var fInfo = (FieldInfo)info;
-                return new InjectableField(fInfo, fInfo.FieldType, monoBehaviour, tag, attribute);
+                return new InjectableField(fInfo, fInfo.FieldType, obj, tag, attribute);
             }
             return null;
         }

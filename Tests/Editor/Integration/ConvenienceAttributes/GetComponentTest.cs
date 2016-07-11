@@ -20,6 +20,11 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
             public new Collider collider;
         }
 
+        internal class GetComponentNonMonoBehaviourTestClass
+        {
+            [GetComponent] public AudioSource audioSource;
+        }
+
         private GetComponentTestClass behaviour;
         private SpecificGetComponentTestClass specificBehaviour;
 
@@ -111,6 +116,15 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
             specificBehaviour = obj.AddComponent<SpecificGetComponentTestClass>();
 
             new GameObjectInjector(specificBehaviour.gameObject).Inject();
+        }
+
+        [Test]
+        [ExpectedException(typeof(InjectionException))]
+        public void InjectNonMonoBehaviour()
+        {
+            var obj = new GetComponentNonMonoBehaviourTestClass();
+
+            DependencyContainer.Instance.Inject(obj);
         }
 
         [TearDown]

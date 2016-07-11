@@ -26,45 +26,45 @@ namespace Syrinj.Reflection
             this.dependencyMap = dependencyMap;
         }
 
-        public void EvaluateMembers(MonoBehaviour behaviour)
+        public void EvaluateMembers(object obj)
         {
-            if (behaviour == null)
+            if (obj == null)
             {
                 return;
             }
 
-            var allMembers = attributeCache.GetMembersForType(behaviour.GetType());
+            var allMembers = attributeCache.GetMembersForType(obj.GetType());
 
             for (int i = 0; i < allMembers.Count; i++)
             {
-                EvaluateMemberAttributes(allMembers[i], behaviour);
+                EvaluateMemberAttributes(allMembers[i], obj);
             }
         }
 
-        private void EvaluateMemberAttributes(MemberInfo info, MonoBehaviour behaviour)
+        private void EvaluateMemberAttributes(MemberInfo info, object obj)
         {
-            var injectable = GetInjectableAttribute(info, behaviour);
-            var provider = GetProviderAttribute(info, behaviour);
+            var injectable = GetInjectableAttribute(info, obj);
+            var provider = GetProviderAttribute(info, obj);
 
             EvaluateAttributes(info, injectable, provider);
         }
 
-        private Injectable GetInjectableAttribute(MemberInfo info, MonoBehaviour behaviour)
+        private Injectable GetInjectableAttribute(MemberInfo info, object obj)
         {
             var attributes = attributeCache.GetInjectorAttributesForMember(info);
 
             if (attributes == null || attributes.Count == 0) return null;
 
-            return InjectableFactory.Create(info, behaviour, attributes[0]);
+            return InjectableFactory.Create(info, obj, attributes[0]);
         }
 
-        private Provider GetProviderAttribute(MemberInfo info, MonoBehaviour behaviour)
+        private Provider GetProviderAttribute(MemberInfo info, object obj)
         {
             var attributes = attributeCache.GetProviderAttributesForMember(info);
 
             if (attributes == null || attributes.Count == 0) return null;
 
-            return ProviderFactory.Create(info, behaviour, ((ProvidesAttribute)attributes[0]).Tag);
+            return ProviderFactory.Create(info, obj, ((ProvidesAttribute)attributes[0]).Tag);
         }
 
         private void EvaluateAttributes(MemberInfo info, Injectable injectable, Provider provider)
@@ -93,7 +93,7 @@ namespace Syrinj.Reflection
             }
             else
             {
-                throw new InjectionException(injectable.MonoBehaviour, "A provider cannot be annotated with [Inject] " + injectable.Type);
+                throw new InjectionException(injectable.Object, "A provider cannot be annotated with [Inject] " + injectable.Type);
             }
         }
 

@@ -71,6 +71,13 @@ namespace Syrinj
             TryInjectAll();
         }
 
+        public void Inject(object obj)
+        {
+            memberEvaluator.EvaluateMembers(obj);
+
+            TryInjectAll();
+        }
+
         private void TryInjectAll()
         {
             var resolvables = dependencyMap.UnloadResolvableDependents();
@@ -91,7 +98,7 @@ namespace Syrinj
             var resolver = dependencyMap.GetResolverForDependency(injectable);
             if (resolver == null)
             {
-                Debug.LogError(string.Format("[{0}] {1} {2}", injectable.MonoBehaviour, "Could not find resolver for ", injectable));
+                Debug.LogError(string.Format("[{0}] {1} {2}", injectable.Object, "Could not find resolver for ", injectable));
                 return;
             }
             var dependency = resolver.Resolve(injectable);
@@ -103,7 +110,7 @@ namespace Syrinj
             var provider = dependencyMap.GetProviderForDependency(injectable);
             if (provider == null)
             {
-                Debug.LogError(string.Format("[{0}] {1} {2}", injectable.MonoBehaviour, "Could not find provider for ", injectable));
+                Debug.LogError(string.Format("[{0}] {1} {2}", injectable.Object, "Could not find provider for ", injectable));
                 return;
             }
 
@@ -115,7 +122,7 @@ namespace Syrinj
         {
             if (!IsValidDependency(injectable, dependency))
             {
-                Debug.LogError(string.Format("[{0}] {1} {2}", injectable.MonoBehaviour, "Could not find dependency for ", injectable));
+                Debug.LogError(string.Format("[{0}] {1} {2}", injectable.Object, "Could not find dependency for ", injectable));
                 return;
             }
 

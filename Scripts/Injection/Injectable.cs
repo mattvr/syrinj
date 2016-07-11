@@ -10,16 +10,16 @@ namespace Syrinj.Injection
     public abstract class Injectable
     {
         public Type Type;
-        public MonoBehaviour MonoBehaviour;
+        public object Object;
         public string Tag;
         public Attribute Attribute;
 
-        protected Injectable(Type type, MonoBehaviour monoBehaviour, string tag, Attribute attribute)
+        protected Injectable(Type type, object obj, string tag, Attribute attribute)
         {
             Type = type;
             Tag = tag;
             Attribute = attribute;
-            MonoBehaviour = monoBehaviour;
+            Object = obj;
         }
 
         public abstract void Inject(object dependency);
