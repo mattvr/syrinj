@@ -53,7 +53,7 @@ namespace Syrinj.Tests.Graph
         [Test]
         public void ProviderRegistered()
         {
-            var provider = ProviderFactory.Create(providerObject.GetType().GetField("audioSourceProvide"), providerObject, null);
+            var provider = MockProviderFactory.Create(providerObject.GetType().GetField("audioSourceProvide"), providerObject, null);
             var injectable = MockInjectableFactory.Create(providerObject.GetType().GetField("audioSourceInject"), typeof(AudioSource));
 
             map.RegisterProvider(typeof(AudioSource), null, provider);

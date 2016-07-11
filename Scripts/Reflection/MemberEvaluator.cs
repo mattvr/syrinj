@@ -64,7 +64,7 @@ namespace Syrinj.Reflection
 
             if (attributes == null || attributes.Count == 0) return null;
 
-            return ProviderFactory.Create(info, obj, ((ProvidesAttribute)attributes[0]).Tag);
+            return ProviderFactory.Create(info, obj, attributes);
         }
 
         private void EvaluateAttributes(MemberInfo info, Injectable injectable, Provider provider)

@@ -59,7 +59,7 @@ namespace Syrinj.Tests.NonMonoBehaviour
 
         [Test]
         public void SingletonInjectionsSame() {
-            Assert.AreNotEqual(injected.SingletonA.GetHashCode(), injected.SingletonB.GetHashCode());
+            Assert.AreEqual(injected.SingletonA.GetHashCode(), injected.SingletonB.GetHashCode());
         }
     }
 }
