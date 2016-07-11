@@ -23,6 +23,12 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
         private GetComponentTestClass behaviour;
         private SpecificGetComponentTestClass specificBehaviour;
 
+		[SetUp]
+		public void SetUp()
+		{
+			DependencyContainer.Instance.Reset();
+		}
+
         [Test]
         public void InjectNotNull()
         {
@@ -50,10 +56,11 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
         }
 
         [Test]
-        [ExpectedException(typeof(InjectionException))]
         public void InjectWithoutDependency()
         {
             SetUpWithoutDependencyAndInject();
+
+			Assert.IsNull(behaviour.audioSource);
         }
 
         private void SetUpWithoutDependencyAndInject()
@@ -91,10 +98,11 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
         }
 
         [Test]
-        [ExpectedException(typeof(InjectionException))]
         public void InjectSpecificWithoutDependency()
         {
             SetUpWithoutSpecificDependencyAndInject();
+
+			Assert.IsNull(specificBehaviour.collider);
         }
 
         private void SetUpWithoutSpecificDependencyAndInject()

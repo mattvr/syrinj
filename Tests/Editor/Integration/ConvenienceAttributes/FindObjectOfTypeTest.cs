@@ -20,9 +20,15 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
             public Collider dependency;
         }
 
-        private GameObject dependency;
+        private GameObject dependent;
         private FindObjectOfTypeTestClass behaviour;
         private FindObjectOfSpecificTypeTestClass specificBehaviour;
+
+		[SetUp]
+		public void SetUp() 
+		{
+			DependencyContainer.Instance.Reset();
+		}
 
         [Test]
         public void InjectNotNull()
@@ -37,8 +43,8 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
             var obj = new GameObject();
             behaviour = obj.AddComponent<FindObjectOfTypeTestClass>();
 
-            dependency = new GameObject("Test");
-            dependency.AddComponent<AudioSource>();
+			dependent = new GameObject("Test");
+            dependent.AddComponent<AudioSource>();
 
             new GameObjectInjector(behaviour.gameObject).Inject();
         }
@@ -48,14 +54,15 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
         {
             SetUpBehaviourAndSceneObjectAndInject();
 
-            Assert.AreEqual(dependency.GetComponent<AudioSource>(), behaviour.dependency);
+            Assert.AreEqual(dependent.GetComponent<AudioSource>(), behaviour.dependency);
         }
 
         [Test]
-        [ExpectedException(typeof(InjectionException))]
         public void InjectNull()
         {
             SetUpBehaviourWithoutSceneObjectAndInject();
+
+			Assert.IsNull (behaviour.dependency);
         }
 
         private void SetUpBehaviourWithoutSceneObjectAndInject()
@@ -79,8 +86,8 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
             var obj = new GameObject();
             specificBehaviour = obj.AddComponent<FindObjectOfSpecificTypeTestClass>();
 
-            dependency = new GameObject();
-            dependency.AddComponent<BoxCollider>();
+            dependent = new GameObject();
+            dependent.AddComponent<BoxCollider>();
 
             new GameObjectInjector(specificBehaviour.gameObject).Inject();
         }
@@ -90,14 +97,15 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
         {
             SetUpSpecificBehaviourAndSceneObjectAndInject();
 
-            Assert.AreEqual(dependency.GetComponent<BoxCollider>(), specificBehaviour.dependency);
+            Assert.AreEqual(dependent.GetComponent<BoxCollider>(), specificBehaviour.dependency);
         }
 
         [Test]
-        [ExpectedException(typeof(InjectionException))]
         public void InjectSpecificNull()
         {
-            SetUpSpecificBehaviourWithoutSceneObjectAndInject();
+			SetUpSpecificBehaviourWithoutSceneObjectAndInject();
+
+			Assert.IsNull (specificBehaviour.dependency);
         }
 
         private void SetUpSpecificBehaviourWithoutSceneObjectAndInject()
@@ -105,7 +113,7 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
             var obj = new GameObject();
             specificBehaviour = obj.AddComponent<FindObjectOfSpecificTypeTestClass>();
 
-            dependency = new GameObject();
+            dependent = new GameObject();
 
             new GameObjectInjector(specificBehaviour.gameObject).Inject();
         }
@@ -113,7 +121,7 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
         [TearDown]
         public void TearDown()
         {
-            if (dependency != null) GameObject.DestroyImmediate(dependency);
+            if (dependent != null) GameObject.DestroyImmediate(dependent);
             if (behaviour != null) GameObject.DestroyImmediate(behaviour.gameObject);
             if (specificBehaviour != null) GameObject.DestroyImmediate(specificBehaviour.gameObject);
         }

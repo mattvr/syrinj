@@ -83,20 +83,27 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        [ExpectedException(typeof(InjectionException))]
         public void TestSomeTaggedDependenciesNotMet()
         {
             mockProvider.untaggedProvider = untaggedDependency;
             mockProvider.taggedProviderB = taggedDependencyB;
 
             new GameObjectInjector(gameObject).Inject();
+
+
+            Assert.AreEqual(untaggedDependency, mockInjected.UntaggedDependency);
+            Assert.IsNull(mockInjected.TaggedDependencyA);
+            Assert.AreEqual(taggedDependencyB, mockInjected.TaggedDependencyB);
         }
 
         [Test]
-        [ExpectedException(typeof(InjectionException))]
         public void TestTaggedDependenciesNotMet()
         {
             new GameObjectInjector(gameObject).Inject();
+
+            Assert.IsNull(mockInjected.UntaggedDependency);
+            Assert.IsNull(mockInjected.TaggedDependencyA);
+            Assert.IsNull(mockInjected.TaggedDependencyB);
         }
 
         [TearDown]

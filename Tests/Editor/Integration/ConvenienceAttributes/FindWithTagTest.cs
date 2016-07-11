@@ -19,6 +19,12 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
         private GameObject dependency;
         private FindWithTagTestClass behaviour;
 
+		[SetUp]
+		public void SetUp()
+		{
+			DependencyContainer.Instance.Reset();
+		}
+
         [Test]
         public void InjectNotNull()
         {
@@ -47,12 +53,11 @@ namespace Syrinj.Tests.Integration.ConvenienceAttributes
         }
 
         [Test]
-        [ExpectedException(typeof(InjectionException))]
         public void InjectNull()
         {
             SetUpBehaviourWithoutTagAndInject();
 
-            Assert.Null(behaviour.dependency);
+			Assert.IsNull(behaviour.dependency);
         }
 
         private void SetUpBehaviourWithoutTagAndInject()

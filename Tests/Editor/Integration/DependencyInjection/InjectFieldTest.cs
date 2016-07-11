@@ -59,11 +59,13 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        [ExpectedException(typeof(InjectionException))]
         public void TestDependenciesNotMet()
         {
             new GameObjectInjector(gameObject).Inject();
-    }
+
+            Assert.IsNull(mockInjectField.intField);
+            Assert.IsNull(mockInjectField.stringField);
+        }
 
         [TearDown]
         public void TearDown()
