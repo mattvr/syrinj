@@ -69,7 +69,7 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        public void TestTaggedDependenciesMet()
+        public void TaggedDependenciesMet()
         {
             mockProvider.untaggedProvider = untaggedDependency;
             mockProvider.taggedProviderA = taggedDependencyA;
@@ -83,7 +83,7 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        public void TestSomeTaggedDependenciesNotMet()
+        public void SomeTaggedDependenciesNotMet()
         {
             mockProvider.untaggedProvider = untaggedDependency;
             mockProvider.taggedProviderB = taggedDependencyB;
@@ -97,7 +97,7 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        public void TestTaggedDependenciesNotMet()
+        public void TaggedDependenciesNotMet()
         {
             new GameObjectInjector(gameObject).Inject();
 

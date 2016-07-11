@@ -10,7 +10,7 @@ using Syrinj.Tests.Utility;
 using UnityEditor.VersionControl;
 using UnityEngine;
 
-namespace Syrinj.Tests.Unit
+namespace Syrinj.Tests.Graph
 {
     [TestFixture]
     internal class DependencyMapTest
@@ -32,7 +32,7 @@ namespace Syrinj.Tests.Unit
         }
 
         [Test]
-        public void TestRegisterResolver()
+        public void ResolverRegistered()
         {
             var resolver = new GetComponentResolver();
             var injectable = MockInjectableFactory.Create(new GetComponentAttribute());
@@ -43,7 +43,7 @@ namespace Syrinj.Tests.Unit
         }
 
         [Test]
-        public void TestUnregisteredResolver()
+        public void ResolverUnregistered()
         {
             var injectable = MockInjectableFactory.Create(new GetComponentAttribute());
 
@@ -51,7 +51,7 @@ namespace Syrinj.Tests.Unit
         }
 
         [Test]
-        public void TestRegisterProvider()
+        public void ProviderRegistered()
         {
             var provider = ProviderFactory.Create(providerObject.GetType().GetField("audioSourceProvide"), providerObject, null);
             var injectable = MockInjectableFactory.Create(providerObject.GetType().GetField("audioSourceInject"), typeof(AudioSource));
@@ -62,7 +62,7 @@ namespace Syrinj.Tests.Unit
         }
 
         [Test]
-        public void TestUnregisteredProvider()
+        public void ProviderUnregistered()
         {
             var injectable = MockInjectableFactory.Create(providerObject.GetType().GetField("audioSourceInject"), typeof(AudioSource));
 
@@ -70,7 +70,7 @@ namespace Syrinj.Tests.Unit
         }
 
         [Test]
-        public void TestRegisterProvidableDependents()
+        public void ProvidableDependentsRegistered()
         {
             var injectable = MockInjectableFactory.Create();
             map.RegisterProvidableDependent(injectable);
@@ -79,7 +79,7 @@ namespace Syrinj.Tests.Unit
         }
 
         [Test]
-        public void TestRegisterResolvableDependents()
+        public void ResolvableDependentsRegistered()
         {
             var injectable = MockInjectableFactory.Create();
             map.RegisterResolvableDependent(injectable);
@@ -88,7 +88,7 @@ namespace Syrinj.Tests.Unit
         }
 
         [Test]
-        public void TestUnloadProvidableDependents()
+        public void ProvidableDependentsUnloaded()
         {
             var injectable = MockInjectableFactory.Create();
             map.RegisterProvidableDependent(injectable);
@@ -98,7 +98,7 @@ namespace Syrinj.Tests.Unit
         }
 
         [Test]
-        public void TestUnloadResolvableDependents()
+        public void ResolvableDependentsUnloaded()
         {
             var injectable = MockInjectableFactory.Create();
             map.RegisterResolvableDependent(injectable);

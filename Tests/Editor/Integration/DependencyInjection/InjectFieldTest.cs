@@ -47,7 +47,7 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        public void TestDependenciesMet()
+        public void DependenciesMet()
         {
             stringDependency = mockFieldProvider.stringProvider = new MockDependency<string>(TAG);
             intDependency = mockFieldProvider.intProvider = new MockDependency<int>(NUM);
@@ -59,7 +59,7 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        public void TestDependenciesNotMet()
+        public void DependenciesNotMet()
         {
             new GameObjectInjector(gameObject).Inject();
 

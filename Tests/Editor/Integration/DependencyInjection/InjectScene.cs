@@ -65,7 +65,7 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        public void TestSceneInjector()
+        public void SceneInjected()
         {
             injector.InjectScene();
 

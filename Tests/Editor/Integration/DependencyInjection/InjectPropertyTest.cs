@@ -60,7 +60,7 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        public void TestDependencyMet()
+        public void DependencyMet()
         {
             stringDependency = new MockDependency<string>(TAG);
             randomNumber = new Random(NUM).Next();
@@ -74,7 +74,7 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         }
 
         [Test]
-        public void TestDependencyNotMet()
+        public void DependencyNotMet()
         {
             new GameObjectInjector(gameObject).Inject();
 
