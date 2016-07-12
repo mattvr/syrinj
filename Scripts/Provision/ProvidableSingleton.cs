@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Syrinj.Providers
+namespace Syrinj.Provision
 {
-    public class ProviderSingleton : Provider
+    public class ProvidableSingleton : Providable
     {
         private object Instance;
 
-        public ProviderSingleton(Type type, string tag) : base(null, tag)
+        public ProvidableSingleton(Type type, string tag) : base(null, tag)
         {
             Type = type;
         }

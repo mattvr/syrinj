@@ -2,7 +2,7 @@
 
 namespace Syrinj
 {
-    public class InjectFactory<T> where T : new()
+    public class Provider<T> where T : new()
     {
         public T Create()
         {

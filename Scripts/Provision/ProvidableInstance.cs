@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Syrinj.Providers
+namespace Syrinj.Provision
 {
-    public class ProviderInstance : Provider
+    public class ProvidableInstance : Providable
     {
-        public ProviderInstance(Type type, string tag) : base(null, tag)
+        public ProvidableInstance(Type type, string tag) : base(null, tag)
         {
             Type = type;
         }

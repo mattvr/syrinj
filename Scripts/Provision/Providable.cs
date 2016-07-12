@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace Syrinj.Providers
+namespace Syrinj.Provision
 {
-    public abstract class Provider
+    public abstract class Providable
     {
         public Type Type;
         public string Tag;
         public object Instance;
 
-        protected Provider(object instance, string tag)
+        protected Providable(object instance, string tag)
         {
             this.Instance = instance;
             this.Tag = tag;

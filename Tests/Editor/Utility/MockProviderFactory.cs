@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Syrinj.Providers;
+using Syrinj.Provision;
 
 namespace Syrinj.Tests.Utility
 {
     internal class MockProviderFactory
     {
-        public static Provider Create(Type type, string tag)
+        public static Providable Create(Type type, string tag)
         {
-            return new ProviderSingleton(type, tag);
+            return new ProvidableSingleton(type, tag);
         }
 
-        public static ProviderField Create(FieldInfo info, object instance, string tag) {
-            return new ProviderField(info, instance, tag);
+        public static ProvidableField Create(FieldInfo info, object instance, string tag) {
+            return new ProvidableField(info, instance, tag);
         }
     }
 }

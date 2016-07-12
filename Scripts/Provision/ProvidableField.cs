@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 
-namespace Syrinj.Providers
+namespace Syrinj.Provision
 {
-    public class ProviderField : Provider
+    public class ProvidableField : Providable
     {
         private FieldInfo info;
 
-        public ProviderField(FieldInfo info, object instance, string tag) : base(instance, tag)
+        public ProvidableField(FieldInfo info, object instance, string tag) : base(instance, tag)
         {
             this.info = info;
             this.Type = info.FieldType;

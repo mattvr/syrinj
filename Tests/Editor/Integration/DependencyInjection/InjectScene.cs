@@ -39,6 +39,7 @@ namespace Syrinj.Tests.Integration.DependencyInjection
         public void SetUp()
         {
             DependencyContainer.Instance.Reset();
+
             gameObjects = new GameObject[numInjectees + 2];
             injectees = new MockInjectee[numInjectees];
 

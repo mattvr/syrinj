@@ -38,6 +38,16 @@ namespace Syrinj.Tests.Integration.DependencyInjection
             [Inject] public MockDependency<string> stringDependency { get; set; }
             [Inject] public int randomNumber { get; set; }
         }
+
+        internal class InvalidInjectorProvider : MonoBehaviour {
+
+            [Inject] [Provides]
+            public int number
+            {
+                get;
+                set;
+            }
+        }
         
         private MockPropertyProvider mockPropertyProvider;
         private MockDependency<string> stringDependency;
@@ -79,6 +89,20 @@ namespace Syrinj.Tests.Integration.DependencyInjection
             new GameObjectInjector(gameObject).Inject();
 
             Assert.IsNull(mockInjectProperty.stringDependency);
+        }
+
+        [Test]
+        [ExpectedException(typeof(InjectionException))]
+        public void BothInjectAndProvideIsInvalid() {
+            gameObject.AddComponent<InvalidInjectorProvider>();
+
+            new GameObjectInjector(gameObject).Inject();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (gameObject != null) Object.DestroyImmediate(gameObject);
         }
     }
 }

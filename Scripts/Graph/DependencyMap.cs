@@ -1,8 +1,8 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Syrinj.Injection;
-using Syrinj.Providers;
+using Syrinj.Provision;
 using Syrinj.Resolvers;
 
 using Debug = UnityEngine.Debug;
@@ -38,14 +38,14 @@ namespace Syrinj.Graph
         }
 
         private Dictionary<Type, IResolver> resolverDependencies;
-        private Dictionary<InjectionKey, Provider> providerDependencies;
+        private Dictionary<InjectionKey, Providable> providerDependencies;
         private List<Injectable> resolvableDependents;
         private List<Injectable> providableDependents;
 
         public DependencyMap()
         {
             resolverDependencies = new Dictionary<Type, IResolver>();
-            providerDependencies = new Dictionary<InjectionKey, Provider>();
+            providerDependencies = new Dictionary<InjectionKey, Providable>();
             resolvableDependents = new List<Injectable>();
             providableDependents = new List<Injectable>();
         }
@@ -84,7 +84,7 @@ namespace Syrinj.Graph
             return null;
         }
 
-        public Provider GetProviderForDependency(Injectable injectable)
+        public Providable GetProviderForDependency(Injectable injectable)
         {
             var key = new InjectionKey(injectable.Type, injectable.Tag);
             if (providerDependencies.ContainsKey(key))
@@ -99,7 +99,7 @@ namespace Syrinj.Graph
             RegisterBindingResolver(type, resolver);
         }
 
-        public void RegisterProvider(Type type, string tag, Provider provider)
+        public void RegisterProvider(Type type, string tag, Providable provider)
         {
             RegisterBindingProvider(new InjectionKey(type, tag), provider);
         }
@@ -112,7 +112,7 @@ namespace Syrinj.Graph
             }
         }
 
-        private void RegisterBindingProvider(InjectionKey injectionKey, Provider provider)
+        private void RegisterBindingProvider(InjectionKey injectionKey, Providable provider)
         {
             if (!providerDependencies.ContainsKey(injectionKey))
             {

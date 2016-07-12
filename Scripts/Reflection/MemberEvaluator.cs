@@ -4,14 +4,14 @@ using Syrinj.Attributes;
 using Syrinj.Exceptions;
 using Syrinj.Graph;
 using Syrinj.Injection;
-using Syrinj.Providers;
+using Syrinj.Provision;
 using UnityEngine;
 
 namespace Syrinj.Reflection
 {
     public class MemberEvaluator
     {
-        private Dictionary<MemberInfo, Provider> providers;
+        private Dictionary<MemberInfo, Providable> providers;
         private Dictionary<MemberInfo, Injectable> dependentProviders;
 
         private Dictionary<MemberInfo, Injectable> dependencies;
@@ -58,16 +58,16 @@ namespace Syrinj.Reflection
             return InjectableFactory.Create(info, obj, attributes[0]);
         }
 
-        private Provider GetProviderAttribute(MemberInfo info, object obj)
+        private Providable GetProviderAttribute(MemberInfo info, object obj)
         {
             var attributes = attributeCache.GetProviderAttributesForMember(info);
 
             if (attributes == null || attributes.Count == 0) return null;
 
-            return ProviderFactory.Create(info, obj, attributes);
+            return ProvidableFactory.Create(info, obj, attributes);
         }
 
-        private void EvaluateAttributes(MemberInfo info, Injectable injectable, Provider provider)
+        private void EvaluateAttributes(MemberInfo info, Injectable injectable, Providable provider)
         {
             if (injectable != null && provider != null)
             {
@@ -83,7 +83,7 @@ namespace Syrinj.Reflection
             }
         }
 
-        private void EvaluateInjectableProvider(Injectable injectable, Provider provider)
+        private void EvaluateInjectableProvider(Injectable injectable, Providable provider)
         {
             dependencyMap.RegisterProvider(injectable.Type, injectable.Tag, provider);
 
@@ -93,7 +93,7 @@ namespace Syrinj.Reflection
             }
             else
             {
-                throw new InjectionException(injectable.Object, "A provider cannot be annotated with [Inject] " + injectable.Type);
+                throw new InjectionException(injectable.Object, "A member cannot be annotated both with [Inject] and [Provides]" + injectable.Type);
             }
         }
 
@@ -109,7 +109,7 @@ namespace Syrinj.Reflection
             }
         }
 
-        private void EvaluateProvider(Provider provider)
+        private void EvaluateProvider(Providable provider)
         {
             dependencyMap.RegisterProvider(provider.Type, provider.Tag, provider);
         }

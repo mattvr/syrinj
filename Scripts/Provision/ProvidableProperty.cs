@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 
-namespace Syrinj.Providers
+namespace Syrinj.Provision
 {
-    public class ProviderProperty : Provider
+    public class ProvidableProperty : Providable
     {
         private PropertyInfo info;
 
-        public ProviderProperty(PropertyInfo info, object instance, string tag) : base(instance, tag)
+        public ProvidableProperty(PropertyInfo info, object instance, string tag) : base(instance, tag)
         {
             this.info = info;
             this.Type = info.PropertyType;

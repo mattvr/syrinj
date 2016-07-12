@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 using Syrinj.Attributes;
 
-namespace Syrinj.Providers
+namespace Syrinj.Provision
 {
-    public class ProviderFactory
+    public class ProvidableFactory
     {
         protected class ProviderData
         {
@@ -16,7 +16,7 @@ namespace Syrinj.Providers
             public bool IsInstance;
         }
 
-        public static Provider Create(MemberInfo info, object instance, IList<UnityProviderAttribute> attributes)
+        public static Providable Create(MemberInfo info, object instance, IList<UnityProviderAttribute> attributes)
         {
             var data = ParseAttributes(attributes);
 
@@ -83,7 +83,7 @@ namespace Syrinj.Providers
             return attribute is InstanceAttribute;
         }
 
-        private static Provider GetProviderFromProperty(MemberInfo info, object instance, ProviderData data) {
+        private static Providable GetProviderFromProperty(MemberInfo info, object instance, ProviderData data) {
             var pInfo = (PropertyInfo)info;
 
             var provider = GetInstantiatingProvider(pInfo.PropertyType, data);
@@ -93,11 +93,11 @@ namespace Syrinj.Providers
             }
             else
             {
-                return new ProviderProperty(pInfo, instance, data.Tag);
+                return new ProvidableProperty(pInfo, instance, data.Tag);
             }
         }
 
-        private static Provider GetProviderFromField(MemberInfo info, object instance, ProviderData data) {
+        private static Providable GetProviderFromField(MemberInfo info, object instance, ProviderData data) {
             var fInfo = (FieldInfo)info;
 
             var provider = GetInstantiatingProvider(fInfo.FieldType, data);
@@ -107,18 +107,18 @@ namespace Syrinj.Providers
             }
             else
             {
-                return new ProviderField(fInfo, instance, data.Tag);
+                return new ProvidableField(fInfo, instance, data.Tag);
             }
         }
 
-        private static Provider GetInstantiatingProvider(Type type, ProviderData data) {
+        private static Providable GetInstantiatingProvider(Type type, ProviderData data) {
             if (data.IsSingleton)
             {
-                return new ProviderSingleton(type, data.Tag);
+                return new ProvidableSingleton(type, data.Tag);
             }
             else if (data.IsInstance)
             {
-                return new ProviderInstance(type, data.Tag);
+                return new ProvidableInstance(type, data.Tag);
             }
             else
             {

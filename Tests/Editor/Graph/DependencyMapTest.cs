@@ -4,7 +4,7 @@ using NUnit.Framework;
 using Syrinj.Attributes;
 using Syrinj.Graph;
 using Syrinj.Injection;
-using Syrinj.Providers;
+using Syrinj.Provision;
 using Syrinj.Resolvers;
 using Syrinj.Tests.Utility;
 using UnityEditor.VersionControl;
