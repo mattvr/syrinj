@@ -9,13 +9,13 @@ namespace Syrinj.Tests.Utility
 {
     internal class MockProviderFactory
     {
-        public static Providable Create(Type type, string tag)
+        public static IProvider Create(Type type, string tag)
         {
-            return new ProvidableSingleton(type, tag);
+            return new SingletonProvider(type, tag);
         }
 
-        public static ProvidableField Create(FieldInfo info, object instance, string tag) {
-            return new ProvidableField(info, instance, tag);
+        public static FieldProvider Create(FieldInfo info, object instance, string tag) {
+            return new FieldProvider(info, instance, tag);
         }
     }
 }

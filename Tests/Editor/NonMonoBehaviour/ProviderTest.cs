@@ -35,15 +35,15 @@ namespace Syrinj.Tests.NonMonoBehaviour
         public void TestProviderCreated() {
             DependencyContainer.Instance.Inject(provided);
 
-            Assert.NotNull(provided.TestProvider.Create());
+            Assert.NotNull(provided.TestProvider.Get());
         }
 
         [Test]
         public void TestProviderCreatedMultiple() {
             DependencyContainer.Instance.Inject(provided);
 
-            var objA = provided.TestProvider.Create();
-            var objB = provided.TestProvider.Create();
+            var objA = provided.TestProvider.Get();
+            var objB = provided.TestProvider.Get();
 
             Assert.NotNull(objA);
             Assert.NotNull(objB);

@@ -11,11 +11,10 @@ namespace Syrinj.Reflection
 {
     public class MemberEvaluator
     {
-        private Dictionary<MemberInfo, Providable> providers;
+        private Dictionary<MemberInfo, IProvider> providers;
         private Dictionary<MemberInfo, Injectable> dependentProviders;
 
         private Dictionary<MemberInfo, Injectable> dependencies;
-        private Dictionary<MemberInfo, Injectable> injectedDependencies;
 
         private AttributeCache attributeCache;
         private DependencyMap dependencyMap;
@@ -58,16 +57,16 @@ namespace Syrinj.Reflection
             return InjectableFactory.Create(info, obj, attributes[0]);
         }
 
-        private Providable GetProviderAttribute(MemberInfo info, object obj)
+        private IProvider GetProviderAttribute(MemberInfo info, object obj)
         {
             var attributes = attributeCache.GetProviderAttributesForMember(info);
 
             if (attributes == null || attributes.Count == 0) return null;
 
-            return ProvidableFactory.Create(info, obj, attributes);
+            return ProviderFactory.Create(info, obj, attributes);
         }
 
-        private void EvaluateAttributes(MemberInfo info, Injectable injectable, Providable provider)
+        private void EvaluateAttributes(MemberInfo info, Injectable injectable, IProvider provider)
         {
             if (injectable != null && provider != null)
             {
@@ -83,7 +82,7 @@ namespace Syrinj.Reflection
             }
         }
 
-        private void EvaluateInjectableProvider(Injectable injectable, Providable provider)
+        private void EvaluateInjectableProvider(Injectable injectable, IProvider provider)
         {
             dependencyMap.RegisterProvider(injectable.Type, injectable.Tag, provider);
 
@@ -109,7 +108,7 @@ namespace Syrinj.Reflection
             }
         }
 
-        private void EvaluateProvider(Providable provider)
+        private void EvaluateProvider(IProvider provider)
         {
             dependencyMap.RegisterProvider(provider.Type, provider.Tag, provider);
         }

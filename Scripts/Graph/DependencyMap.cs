@@ -37,15 +37,15 @@ namespace Syrinj.Graph
             }
         }
 
-        private Dictionary<Type, IResolver> resolverDependencies;
-        private Dictionary<InjectionKey, Providable> providerDependencies;
+        private Dictionary<Type, IResolver> resolvers;
+        private Dictionary<InjectionKey, IProvider> providers;
         private List<Injectable> resolvableDependents;
         private List<Injectable> providableDependents;
 
         public DependencyMap()
         {
-            resolverDependencies = new Dictionary<Type, IResolver>();
-            providerDependencies = new Dictionary<InjectionKey, Providable>();
+            resolvers = new Dictionary<Type, IResolver>();
+            providers = new Dictionary<InjectionKey, IProvider>();
             resolvableDependents = new List<Injectable>();
             providableDependents = new List<Injectable>();
         }
@@ -67,6 +67,17 @@ namespace Syrinj.Graph
         public void RegisterProvidableDependent(Injectable injectable)
         {
             providableDependents.Add(injectable);
+            TryRegisterProvider(injectable);
+        }
+
+        private void TryRegisterProvider(Injectable injectable)
+        {
+            if (injectable.Type != null && injectable.Type.IsSubclassOf(typeof(Provider)) && injectable.Tag == null)
+            {
+                var key = new InjectionKey(injectable.Type, null);
+                var provider = ProviderFactory.CreateGeneric(injectable.Type);
+                providers.Add(key, provider);
+            }
         }
 
         public void RegisterResolvableDependent(Injectable injectable)
@@ -77,19 +88,19 @@ namespace Syrinj.Graph
         public IResolver GetResolverForDependency(Injectable injectable)
         {
             var type = injectable.Attribute.GetType();
-            if (resolverDependencies.ContainsKey(type))
+            if (resolvers.ContainsKey(type))
             {
-                return resolverDependencies[type];
+                return resolvers[type];
             }
             return null;
         }
 
-        public Providable GetProviderForDependency(Injectable injectable)
+        public IProvider GetProviderForDependency(Injectable injectable)
         {
             var key = new InjectionKey(injectable.Type, injectable.Tag);
-            if (providerDependencies.ContainsKey(key))
+            if (providers.ContainsKey(key))
             {
-                return providerDependencies[key];
+                return providers[key];
             }
             return null;
         }
@@ -99,24 +110,24 @@ namespace Syrinj.Graph
             RegisterBindingResolver(type, resolver);
         }
 
-        public void RegisterProvider(Type type, string tag, Providable provider)
+        public void RegisterProvider(Type type, string tag, IProvider provider)
         {
             RegisterBindingProvider(new InjectionKey(type, tag), provider);
         }
 
         private void RegisterBindingResolver(Type type, IResolver resolver)
         {
-            if (!resolverDependencies.ContainsKey(type))
+            if (!resolvers.ContainsKey(type))
             {
-                resolverDependencies.Add(type, resolver);
+                resolvers.Add(type, resolver);
             }
         }
 
-        private void RegisterBindingProvider(InjectionKey injectionKey, Providable provider)
+        private void RegisterBindingProvider(InjectionKey injectionKey, IProvider provider)
         {
-            if (!providerDependencies.ContainsKey(injectionKey))
+            if (!providers.ContainsKey(injectionKey))
             {
-                providerDependencies.Add(injectionKey, provider);
+                providers.Add(injectionKey, provider);
             }
         }
     }

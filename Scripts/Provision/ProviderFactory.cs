@@ -6,7 +6,7 @@ using Syrinj.Attributes;
 
 namespace Syrinj.Provision
 {
-    public class ProvidableFactory
+    public class ProviderFactory
     {
         protected class ProviderData
         {
@@ -16,7 +16,12 @@ namespace Syrinj.Provision
             public bool IsInstance;
         }
 
-        public static Providable Create(MemberInfo info, object instance, IList<UnityProviderAttribute> attributes)
+        public static Provider CreateGeneric(Type type) {
+            var providerType = typeof(Provider<>).MakeGenericType(type);
+            return (Provider) Activator.CreateInstance(providerType);
+        }
+
+        public static IProvider Create(MemberInfo info, object instance, IList<UnityProviderAttribute> attributes)
         {
             var data = ParseAttributes(attributes);
 
@@ -83,7 +88,7 @@ namespace Syrinj.Provision
             return attribute is InstanceAttribute;
         }
 
-        private static Providable GetProviderFromProperty(MemberInfo info, object instance, ProviderData data) {
+        private static IProvider GetProviderFromProperty(MemberInfo info, object instance, ProviderData data) {
             var pInfo = (PropertyInfo)info;
 
             var provider = GetInstantiatingProvider(pInfo.PropertyType, data);
@@ -93,11 +98,11 @@ namespace Syrinj.Provision
             }
             else
             {
-                return new ProvidableProperty(pInfo, instance, data.Tag);
+                return new PropertyProvider(pInfo, instance, data.Tag);
             }
         }
 
-        private static Providable GetProviderFromField(MemberInfo info, object instance, ProviderData data) {
+        private static IProvider GetProviderFromField(MemberInfo info, object instance, ProviderData data) {
             var fInfo = (FieldInfo)info;
 
             var provider = GetInstantiatingProvider(fInfo.FieldType, data);
@@ -107,18 +112,18 @@ namespace Syrinj.Provision
             }
             else
             {
-                return new ProvidableField(fInfo, instance, data.Tag);
+                return new FieldProvider(fInfo, instance, data.Tag);
             }
         }
 
-        private static Providable GetInstantiatingProvider(Type type, ProviderData data) {
+        private static IProvider GetInstantiatingProvider(Type type, ProviderData data) {
             if (data.IsSingleton)
             {
-                return new ProvidableSingleton(type, data.Tag);
+                return new SingletonProvider(type, data.Tag);
             }
             else if (data.IsInstance)
             {
-                return new ProvidableInstance(type, data.Tag);
+                return new InstanceProvider(type, data.Tag);
             }
             else
             {
