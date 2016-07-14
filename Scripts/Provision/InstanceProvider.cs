@@ -15,7 +15,9 @@ namespace Syrinj.Provision
 
         public object Get()
         {
-            return Activator.CreateInstance(Type);
+            var instance = Activator.CreateInstance(Type);
+            DependencyContainer.Instance.Inject(instance);
+            return instance;
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Syrinj.Provision
             if (instance == null)
             {
                 instance = Activator.CreateInstance(Type);
+                DependencyContainer.Instance.Inject(instance);
             }
 
             return instance;

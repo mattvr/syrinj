@@ -1,7 +1,7 @@
 #Syrinj
 ######**Lightweight dependency injection** & convenient attributes for Unity
 
-###[Release 1.0.0 available here!](https://github.com/mfav/syrinj/releases/tag/1.0.0)
+###[Release 1.1.0 available here!](https://github.com/mfav/syrinj/releases/tag/1.0.0) (7/14/16)
 
 ---
 
@@ -38,7 +38,7 @@ public class SceneProviders : MonoBehaviour
 {
     [Provides] 
     public Light SunProvider; // drag object in inspector to set
-    
+
     [Provides]
     [FindObjectOfType(typeof(Player))]
     public Player PlayerProvider; // provides Player object from scene
@@ -60,17 +60,35 @@ public class SimpleBehaviour : MonoBehaviour
 
 2. Annotate your classes with the attributes shown in the [Documentation](#documentation). 
 
-3. Follow the steps below for injection on scene load and/or while running.
+3. Follow the steps below for your use case:
+
+   ​
 
 **For injection on scene load:**
 
 Create a GameObject in your scene with the Component `SceneInjector`. 
+
+
 
 **For injection while application is running:**
 
 Attach the `InjectorComponent` to any GameObject which contains providers and injectors. 
 
 Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well. DO NOT attach another InjectorComponent to those children. There should be only one root `InjectorComponent` for an object created with `GameObject.Instantiate()`.
+
+
+
+**For providing non-MonoBehaviours:**
+
+Add `[Instance]` or `[Singleton]` attributes to providers of non-MonoBehaviours. These will construct new instances or a shared single instance, respectively, at injection sites. 
+
+
+
+**For injecting non-MonoBehaviours:**
+
+Inject a `Provider<T>` if you wish to create your own injected objects. `T` is the object you wish to create. Then call `Get()` on the provider for a new instance.
+
+
 
 ---
 
@@ -93,7 +111,7 @@ Here's a more concrete example. Say your enemies have a `RocketLauncher` which c
 ```csharp
 public class RocketLauncher {
     private Player player;
-  
+
     public void Fire() {
         var target = player;
         var missile = new GoodHomingMissile(target);
@@ -102,11 +120,11 @@ public class RocketLauncher {
 
 public class GoodHomingMissile {
     private Player target;
-    
+
     public GoodHomingMissile(Player target) {
         this.target = target;
     }
-    
+
     public void MoveTowardsTarget() {
         // ...
     }
@@ -120,11 +138,11 @@ If you're a Unity developer, you may already notice a slight issue. In Unity, yo
 ```csharp
 public class OkayHomingMissile : MonoBehaviour {
     private Player target;
-    
+
     public void Initialize(Player target) {
         this.target = target;
     }
-    
+
     // ...
 }
 ```
@@ -134,7 +152,7 @@ This is okay, but you lose the guarantee that the `OkayHomingMissile` has its de
 ```csharp
 public class OkayHomingMissile : MonoBehaviour {
     // ...
-    
+
     void Update() {
         if (distanceToTarget() < 0.1f) {
             var explosion = new Explosion();
@@ -160,7 +178,7 @@ public class BadHomingMissile : MonoBehaviour {
     private int damage;
     private Player target;
     private RocketLauncher launcher;
-    
+
     void Start() {
         audio = this.GetComponent<AudioSource>();
         target = Player.Instance;
@@ -196,7 +214,7 @@ public class ExampleProvider : MonoBehaviour
     [Provides]
     [FindObjectOfType(typeof(Canvas))]
     private Canvas UIRootProvider; // any convenience attribute can be combined with "Provides"
-    
+
     [Provides]
     public float RandomNumberProvider 
     {
@@ -204,33 +222,39 @@ public class ExampleProvider : MonoBehaviour
             return Random.RandomRange(0f, 1f); 
         } // define custom provider properties, these evaluate each injection
     }
-    
+
     [Provides]
     public AudioSource MusicSourceProvider; // manually set in inspector
-    
+
     [Provides("Primary")] // specify optional tags for multiple bindings of the same type
     public Camera PrimaryCamera;
-    
+
     [Provides("Secondary")]
     public Camera SecondaryCamera;
+  
+  	[Provides] [Instance]
+  	public NPC NPCProvider; // creates a new NPC at each injection site
+  
+  	[Provides] [Singleton]
+  	public Player PlayerProvider; // shares the same Player each injection
 }
 
 // ...
 
 public class ExampleInjectee : MonoBehaviour
 {
-    // each field will be set on Awake()
-    
     [Inject] private Canvas UIRoot;
     [Inject] private float RandomNumber;
     [Inject] private AudioSource MusicSource;
-    
+  
+  	[Inject] private Provider<Enemy> Spawner; // instantiates new injected NPC on Spawner.Get();
+
     [Inject("Primary")]     private Camera primaryCamera;
     [Inject("Secondary")]   private Camera secondaryCamera;
-    
+
     [GetComponent] 
     private Rigidbody rigidbody; // automatically caches Rigidbody on this object
-    
+
     [FindWithTag("Player")]
     private GameObject Player { get; set; } // works with properties, as long as they can be set
 }
@@ -238,20 +262,28 @@ public class ExampleInjectee : MonoBehaviour
 
 #####Convenience attributes:
 
-Attribute | Arguments | Usage
---- | --- | ---
-`[GetComponent]`| *opt.* `System.Type ComponentType` | Gets a component attached to this GameObject.
-`[GetComponentInChildren]`| *opt.* `System.Type ComponentType` | Gets a component attached to this GameObject or its children.
-`[Find]` | `string GameObjectName` | Finds a GameObject in scene with a given name.
-`[FindWithTag]` | `string Tag` | Finds a GameObject in scene with a given tag.
-`[FindObjectOfType]` | `System.Type ComponentType` | Finds a component in the scene with a given type.
+| Attribute                  | Arguments                          | Usage                                    |
+| -------------------------- | ---------------------------------- | ---------------------------------------- |
+| `[GetComponent]`           | *opt.* `System.Type ComponentType` | Gets a component attached to this GameObject. |
+| `[GetComponentInChildren]` | *opt.* `System.Type ComponentType` | Gets a component attached to this GameObject or its children. |
+| `[Find]`                   | `string GameObjectName`            | Finds a GameObject in scene with a given name. |
+| `[FindWithTag]`            | `string Tag`                       | Finds a GameObject in scene with a given tag. |
+| `[FindObjectOfType]`       | `System.Type ComponentType`        | Finds a component in the scene with a given type. |
 
 #####Injection attributes:
 
-| Attribute | Arguments | Usage |
-| --- | --- | --- |
-|`[Provides]`| *opt.* `string Tag` | Registers a provider for a given tag and type. |
-|`[Inject]`| *opt.* `string Tag` | Injects a field/property for a given tag and type. |
+| Attribute     | Arguments           | Usage                                    |
+| ------------- | ------------------- | ---------------------------------------- |
+| `[Provides]`  | *opt.* `string Tag` | Registers a provider for a given tag and type. |
+| `[Inject]`    | *opt.* `string Tag` | Injects a field/property for a given tag and type. |
+| `[Instance]`  | *none*              | Attach to `[Provides]` to construct a new instance at every injection. |
+| `[Singleton]` | *none*              | Attach to `[Provides]` to construct a singleton instance shared across injections. |
+
+#####Classes
+
+| Class         | Usage                                    |
+| ------------- | ---------------------------------------- |
+| `Provider<T>` | Inject this class if you want to construct instances of `T` and have them be injected. Use `Get()` to construct a new instance of `T`, where `T` has a default constructor and is not a MonoBehaviour. |
 
 ##Notes
 
@@ -261,17 +293,17 @@ Attribute | Arguments | Usage
 
 **Q: My fields/properties aren't being injected**
   (or) I'm getting an error about missing dependency/provider/resolver
-  
+
 A: Follow these steps in order:
 
 1. Make sure there the `[Inject]` attribute is on the proper injected field, and the `[Provides]` attribute is on the proper provider field. Ensure both are bound to the exact same `Tag` (or lack thereof) and `Type`.
 
-1. Your injecting/providing GameObjects must have `InjectorComponent`s attached (if created with `GameObject.Instiantiate()`) and/or a `SceneInjector` component must exist *somewhere* in the scene (if object exists in the scene initially).
+2. Your injecting/providing GameObjects must have `InjectorComponent`s attached (if created with `GameObject.Instiantiate()`) and/or a `SceneInjector` component must exist *somewhere* in the scene (if object exists in the scene initially).
 
-2. For every object that you call `GameObject.Instantiate()` on, you should have at most ONE `InjectorComponent`. Place this component at the root GameObject, with `ShouldInjectChildren` set if necessary. 
- 
-3. Make sure the fields or property providers aren't null! Use `Debug.Log()` and/or double-check the inspector for the object.
+3. For every object that you call `GameObject.Instantiate()` on, you should have at most ONE `InjectorComponent`. Place this component at the root GameObject, with `ShouldInjectChildren` set if necessary. 
+
+4. Make sure the fields or property providers aren't null! Use `Debug.Log()` and/or double-check the inspector for the object.
 
 5. Verify the script execution order in Unity. Go to `Edit -> Project Settings -> Script Execution Order` and modify the `Syrinj.InjectorComponent` and `Syrinj.SceneInjcetor` scripts to execute **before** all other scripts. Put in a large negative number such that these two scripts before any others in the list.
 
-8. There might be some other problem. Create an issue on GitHub/[message me](https://twitter.com/perceptron)/fix it yourself with a pull request!
+6. There might be some other problem. Create an issue on GitHub/[message me](https://twitter.com/perceptron)/fix it yourself with a pull request!
