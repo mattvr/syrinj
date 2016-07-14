@@ -62,13 +62,10 @@ public class SimpleBehaviour : MonoBehaviour
 
 3. Follow the steps below for your use case:
 
-   ​
 
 **For injection on scene load:**
 
 Create a GameObject in your scene with the Component `SceneInjector`. 
-
-
 
 **For injection while application is running:**
 
@@ -76,19 +73,13 @@ Attach the `InjectorComponent` to any GameObject which contains providers and in
 
 Set the `ShouldInjectChildren` property in the inspector if you wish to inject children of the GameObject as well. DO NOT attach another InjectorComponent to those children. There should be only one root `InjectorComponent` for an object created with `GameObject.Instantiate()`.
 
-
-
 **For providing non-MonoBehaviours:**
 
 Add `[Instance]` or `[Singleton]` attributes to providers of non-MonoBehaviours. These will construct new instances or a shared single instance, respectively, at injection sites. 
 
-
-
 **For injecting non-MonoBehaviours:**
 
-Inject a `Provider<T>` if you wish to create your own injected objects. `T` is the object you wish to create. Then call `Get()` on the provider for a new instance.
-
-
+Inject a `Provider<T>` if you wish to create your own injected objects. `T` is the object you wish to create, and must be a non-MonoBehaviour with a default constructor. Then call `Get()` on the provider for a new instance.
 
 ---
 
