@@ -1,4 +1,6 @@
-﻿namespace Syrinj.Attributes
+﻿using Syrinj.Attributes;
+
+namespace Syrinj
 {
     public class InstanceAttribute : UnityProviderAttribute
     {
