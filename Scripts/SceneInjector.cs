@@ -36,10 +36,7 @@ namespace Syrinj
 
         private void InjectBehaviours(MonoBehaviour[] behaviours)
         {
-            for (int i = 0; i < behaviours.Length; i++)
-            {
-                new GameObjectInjector(behaviours[i].gameObject).Inject();
-            }
+            DependencyContainer.Instance.Inject(behaviours);
         }
     }
 }
