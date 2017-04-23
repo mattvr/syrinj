@@ -1,11 +1,11 @@
-#Syrinj
-######**Lightweight dependency injection** & convenient attributes for Unity
+# Syrinj
+###### **Lightweight dependency injection** & convenient attributes for Unity
 
-###[Release 1.1.1 available here!](https://github.com/mfav/syrinj/releases/tag/1.1.1) (8/1/16)
+### [Release 1.1.1 available here!](https://github.com/mfav/syrinj/releases/tag/1.1.1) (8/1/16)
 
 ---
 
-##Table of Contents
+## Table of Contents
 
 * [Introduction](#introduction)
    * [Examples](#examples)
@@ -20,9 +20,9 @@
 * [Troubleshooting](#troubleshooting)
 
 ---
-##Introduction
+## Introduction
 
-####Examples
+#### Examples
 Convenience attributes:
 ```csharp
 public class SimpleBehaviour : MonoBehaviour
@@ -54,7 +54,7 @@ public class SimpleBehaviour : MonoBehaviour
 ```
 ---
 
-####Set-up
+#### Set-up
 
 1. Add `using Syrinj;` to the top of files which use Syrinj.
 
@@ -83,7 +83,7 @@ Inject a `Provider<T>` if you wish to create your own injected objects. `T` is t
 
 ---
 
-####What is this?
+#### What is this?
 
 Syrinj is a small package to make creating objects simpler in Unity.
 
@@ -91,7 +91,7 @@ It provides convenient attributes, such as `[GetComponent]` which automatically 
 
 For more customizable or shared dependencies, Syrinj allows you to specify providers and injection sites. See the [extended examples](#extended-examples) for how to do this. You can even mix attributes like `[GetComponent]` with a `[Provider]`, so that the `GetComponent()` method only runs once!
 
-####Why use this?
+#### Why use this?
 
 If you're familiar with dependency injection and see how Syrinj could help your project, check out the [set-up](#set-up) and [documentation](#documentation) to see more. If not, read on:
 
@@ -196,9 +196,9 @@ Syrinj allows you to write fewer lines of code, not more. You can take advantage
 
 ---
 
-##Documentation
+## Documentation
 
-####Extended examples
+#### Extended examples
 ```csharp
 public class ExampleProvider : MonoBehaviour
 {
@@ -251,7 +251,7 @@ public class ExampleInjectee : MonoBehaviour
 }
 ```
 
-#####Convenience attributes:
+##### Convenience attributes:
 
 | Attribute                  | Arguments                          | Usage                                    |
 | -------------------------- | ---------------------------------- | ---------------------------------------- |
@@ -261,7 +261,7 @@ public class ExampleInjectee : MonoBehaviour
 | `[FindWithTag]`            | `string Tag`                       | Finds a GameObject in scene with a given tag. |
 | `[FindObjectOfType]`       | `System.Type ComponentType`        | Finds a component in the scene with a given type. |
 
-#####Injection attributes:
+##### Injection attributes:
 
 | Attribute     | Arguments           | Usage                                    |
 | ------------- | ------------------- | ---------------------------------------- |
@@ -270,17 +270,17 @@ public class ExampleInjectee : MonoBehaviour
 | `[Instance]`  | *none*              | Attach to `[Provides]` to construct a new instance at every injection. |
 | `[Singleton]` | *none*              | Attach to `[Provides]` to construct a singleton instance shared across injections. |
 
-#####Classes
+##### Classes
 
 | Class         | Usage                                    |
 | ------------- | ---------------------------------------- |
 | `Provider<T>` | Inject this class if you want to construct instances of `T` and have them be injected. Use `Get()` to construct a new instance of `T`, where `T` has a default constructor and is not a MonoBehaviour. |
 
-##Notes
+## Notes
 
 - Currently only active GameObjects are injected with [Inject] or the convenience attributes.
 
-##Troubleshooting
+## Troubleshooting
 
 **Q: My fields/properties aren't being injected**
   (or) I'm getting an error about missing dependency/provider/resolver
