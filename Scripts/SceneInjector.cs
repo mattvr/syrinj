@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Syrinj
 {
@@ -15,11 +16,10 @@ namespace Syrinj
             Instance = this;
             DependencyContainer.Instance.Reset();
             InjectScene();
-        }
 
-        void OnLevelWasLoaded()
-        {
-            InjectScene();
+            SceneManager.sceneLoaded += delegate {
+                InjectScene ();
+            };
         }
 
         public void InjectScene()
